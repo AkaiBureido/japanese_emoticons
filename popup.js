@@ -213,7 +213,9 @@ function JETableView(parent) {
       //   If 3 widows let last one take two colums
       //   If 2 widows let them both take 2 columns
       //   If 1 widow let it take 4 columns
-      
+      //
+      // For extra eye candy rotate each array by curRow
+
       smiley = groups[0].shift(1);
       colspan = 1;
       

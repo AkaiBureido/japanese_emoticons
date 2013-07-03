@@ -201,6 +201,19 @@ function JETableView(parent) {
     rows[0] = [];
     while(true) {
 
+      // Algorithm:
+      // First add all the 4 cell smileys
+      // Second add all of the 2 cell smileys + 2 cell smileys
+      //   On the last widow 2 cell smiley add two 1 cell smileys
+      //   If ran out of 1 cell smileys display the rest as 4 cells
+      // Third add 3 cell smileys + 1 cell smileys
+      //   If ran out of 1 cell smileys display the rest as 4 cells
+      // Forth if there are any 1 cell smileys left display them normally
+      //   exept if there are widows at the end
+      //   If 3 widows let last one take two colums
+      //   If 2 widows let them both take 2 columns
+      //   If 1 widow let it take 4 columns
+      
       smiley = groups[0].shift(1);
       colspan = 1;
       
@@ -210,10 +223,9 @@ function JETableView(parent) {
         'colspan': 1
       });
 
-
-      if(groups[0].length == 0) {
-        break;
-      }
+      // if(groups[0].length == 0) {
+      //   break;
+      // }
 
       // every time column reaches 4 that means we have to go to 
       if(curColumn == 4) {

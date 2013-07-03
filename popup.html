@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JE</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        padding:0;
+        margin:2px;
+        overflow-y: hidden;
+        background: rgb(230,230,230)
+      }
+
+      /* Global Interface */
+      #container {
+        width: 315px;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.03)));
+        /* box-shadow: inset 0px 4px 3px 0px rgba(0, 0, 0, 0.1); */
+        max-height: 400px;
+        overflow-y: scroll;
+        font-family:Helvetica,Arial,sans-serif;
+        font-size:0.9em;
+      }
+      
+      #topbar {
+        width: 300px;
+        background: rgb(239,239,239);
+        position:absolute;
+        top: 0px;
+        padding: 10px;
+        box-shadow: 2px 0px 4px 0px rgba(0, 0, 0, 0.3);
+      }
+      
+      .view-title {
+        height:16px;
+        font-weight: bold;
+        color: rgba(50, 50, 50, 0.99);
+        font-family: Helvetica,Arial,sans-serif;
+        font-size: 1.2em;
+        text-shadow: 0px 1px rgba(255, 255, 255, 0.99);
+      }
+
+      .back-button {
+        color:  rgb(180,180,180);
+        border-radius: 4px;
+        padding:2px 6px;
+        float: right;
+        vertical-align: middle;
+        cursor: pointer;
+        visibility: hidden;
+        /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.03)), color-stop(100%,rgba(0,0,0,0.08))); */
+      }
+      .back-button:hover {
+        color:  rgb(130,130,130);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.15)));
+      }
+      .back-button:active {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
+        color: white;
+      }
+
+      #view-container {
+        margin-top:50px;
+      }
+
+      /* Catgory List */
+      ul {
+        border: 1px solid rgb(179,179,179);
+        border-radius: 4px;
+        background:  rgb(239,239,239);
+        margin-left: 0;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style-type: none;
+        margin:5px;
+      }
+
+      ul li {
+        cursor: pointer;
+        font-family: Helvetica,Arial,sans-serif;
+        font-size: 1.1em;
+        border-bottom: 1px solid rgb(199,199,199);
+        text-align: center;
+        padding: 10px;
+      }
+      ul li:last-child {
+        border-bottom: none;
+      }
+      li:hover {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.15)));
+      }
+      li:active {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
+        color: white;
+      }
+
+      /* Emotes Table */
+      table {
+        table-layout: fixed;
+        border-collapse:collapse;
+        width: 300px
+      }
+
+      table td {
+        cursor: pointer;
+        box-shadow: inset 1px 1px rgba(255, 255, 255, 0.5);
+        border: 1px 0 0 1px solid white;
+        height: 30px;
+        border: 1px solid rgb(200,200,200);
+        width: 75px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      td:hover {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.15)));
+        box-shadow: none;
+      }
+      td:active {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
+        /* background: rgba(0,0,0,0.2); */
+        box-shadow: none;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="topbar">
+        <span class="view-title">Sample Smiley View:</span>
+        <div class="back-button">Back</div>
+      </div>
+      <div id="view-container">
+        <ul id="emotes-cat">
+          <li>Positive</li>
+          <li>Negative</li>
+          <li>Neitrall</li>
+          <li>Animals</li>
+        </ul>
+        <table id="emotes">
+          <tr>
+            <td>(●´∀｀●)</td>
+            <td>(＾▽＾)</td>
+            <td>(^～^)</td>
+            <td> (´ω｀★)</td>
+          </tr>
+          <tr>
+            <td colspan=2>ヾ(@°▽°@)ノ</td>
+            <td>(/•ิ_•ิ)/</td>
+            <td>（＾ω＾）</td>
+          </tr>
+          <tr>
+            <td>✖‿✖</td>
+            <td colspan=3>☆*･゜ﾟ･*\(^O^)/*･゜ﾟ･*☆</td>
+          </tr>
+          <tr>
+            <td colspan=4>(〃⌒▽⌒)八(〃⌒▽⌒〃)八(⌒▽⌒〃)</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

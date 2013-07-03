@@ -3,185 +3,41 @@
   <head>
     <title>JE</title>
     <meta charset="utf-8" />
-    <style type="text/css">
-      body {
-        width: 325px;
-        padding:0;
-        margin:2px;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        background: rgb(230,230,230)
-      }
-
-      ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-      }
-
-      ::-webkit-scrollbar-track {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        height: 5px;
-        height: 5px;
-        border-radius: 10px;
-        background:rgb(190,190,190);
-      }
-
-      ::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background:rgb(120,120,120);
-      }
-
-      ::-webkit-scrollbar-corner {
-        background:transparent;
-      }
-      
-      /* Global Interface */
-      #container {
-        width: 325px;
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.03)));
-        overflow: hidden;
-        font-family:Helvetica,Arial,sans-serif;
-        font-size:0.9em;
-      }
-      
-      #topbar {
-        width: 305px;
-        background: rgb(239,239,239);
-        padding: 10px;
-        box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.3);
-        margin-bottom:4px;
-        z-index:98;
-      }
-
-      .view-title {
-        height:16px;
-        font-weight: bold;
-        color: rgba(50, 50, 50, 0.99);
-        font-family: helvetica,arial,sans-serif;
-        font-size: 1.2em;
-        text-shadow: 0px 1px rgba(255, 255, 255, 0.99);
-      }
-
-      .back-button {
-        color:  rgb(180,180,180);
-        border-radius: 4px;
-        padding:2px 6px;
-        float: right;
-        vertical-align: middle;
-        cursor: pointer;
-      }
-      .back-button:hover {
-        color:  rgb(130,130,130);
-        background: rgba(0,0,0,0.08);
-      }
-      .back-button:active {
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
-        color: white;
-      }
-
-      #view-container {
-        max-height: 200px;
-        overflow-y:scroll;
-        z-index:99;
-        /* margin-top:50px; */
-      }
-
-      /* Catgory List */
-      ul {
-        border: 1px solid rgb(179,179,179);
-        border-radius: 4px;
-        background:  rgb(239,239,239);
-        margin-left: 0;
-        padding-left: 0;
-        margin-bottom: 0;
-        list-style-type: none;
-        margin:5px;
-      }
-
-      ul li {
-        cursor: pointer;
-        font-family: Helvetica,Arial,sans-serif;
-        font-size: 1.1em;
-        border-bottom: 1px solid rgb(199,199,199);
-        text-align: center;
-        padding: 10px;
-      }
-      ul li:last-child {
-        border-bottom: none;
-      }
-      li:hover {
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.15)));
-      }
-      li:active {
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
-        color: white;
-      }
-
-      /* Emotes Table */
-      table {
-        table-layout: fixed;
-        border-collapse:collapse;
-        width: 300px
-      }
-
-      table td {
-        cursor: pointer;
-        box-shadow: inset 1px 1px rgba(255, 255, 255, 0.5);
-        border: 1px 0 0 1px solid white;
-        height: 30px;
-        border: 1px solid rgb(200,200,200);
-        width: 75px;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      td:hover {
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.15)));
-        box-shadow: none;
-      }
-      td:active {
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
-        /* background: rgba(0,0,0,0.2); */
-        box-shadow: none;
-        color: white;
-      }
-    </style>
+    <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <div id="container">
-      <div id="topbar">
+    <div id="container" >
+      <div id="topbar" class="clearfix">
         <span class="view-title">Sample Smiley View:</span>
         <div class="back-button">Back</div>
       </div>
       <div id="view-container">
-        <ul id="emotes-cat">
-          <li>Positive</li>
-          <li>Negative</li>
-          <li>Neitrall</li>
-          <li>Animals</li>
-        </ul>
-        <table id="emotes">
-          <tr>
-            <td>(●´∀｀●)</td>
-            <td>(＾▽＾)</td>
-            <td>(^～^)</td>
-            <td> (´ω｀★)</td>
-          </tr>
-          <tr>
-            <td colspan=2>ヾ(@°▽°@)ノ</td>
-            <td>(/•ิ_•ิ)/</td>
-            <td>（＾ω＾）</td>
-          </tr>
-          <tr>
-            <td>✖‿✖</td>
-            <td colspan=3>☆*･゜ﾟ･*\(^O^)/*･゜ﾟ･*☆</td>
-          </tr>
-          <tr>
-            <td colspan=4>(〃⌒▽⌒)八(〃⌒▽⌒〃)八(⌒▽⌒〃)</td>
-          </tr>
-        </table>
+        <!-- <ul id="emotes&#45;cat"> -->
+        <!--   <li>Positive</li> -->
+        <!--   <li>Negative</li> -->
+        <!--   <li>Neitrall</li> -->
+        <!--   <li>Animals</li> -->
+        <!-- </ul> -->
+        <!-- <table id="emotes"> -->
+        <!--   <tr> -->
+        <!--     <td>(●´∀｀●)</td> -->
+        <!--     <td>(＾▽＾)</td> -->
+        <!--     <td>(^～^)</td> -->
+        <!--     <td> (´ω｀★)</td> -->
+        <!--   </tr> -->
+        <!--   <tr> -->
+        <!--     <td colspan=2>ヾ(@°▽°@)ノ</td> -->
+        <!--     <td>(/•ิ_•ิ)/</td> -->
+        <!--     <td>（＾ω＾）</td> -->
+        <!--   </tr> -->
+        <!--   <tr> -->
+        <!--     <td>✖‿✖</td> -->
+        <!--     <td colspan=3>☆*･゜ﾟ･*\(^O^)/*･゜ﾟ･*☆</td> -->
+        <!--   </tr> -->
+        <!--   <tr> -->
+        <!--     <td colspan=4>(〃⌒▽⌒)八(〃⌒▽⌒〃)八(⌒▽⌒〃)</td> -->
+        <!--   </tr> -->
+        <!-- </table> -->
       </div>
     </div>
     <script src="popup.js"></script>

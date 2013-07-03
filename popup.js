@@ -5,8 +5,8 @@ String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };
 
-app = new JEViewController()
-window.onload = app.awakeFromLoad()
+app = new JEViewController();
+window.onready = app.awakeFromLoad()
 
 function JEViewController() {
   // viewTitle, backButton, viewContainer, model
@@ -23,21 +23,51 @@ function JEViewController() {
 
   this.awakeFromModelLoad = function() {
     console.log("model ready");
-    console.log(this.$viewTitle);
+    this.switchToCategoriesView();
+  }
 
+  this.switchToCategoriesView = function () {
     this.setTitle("Categories");
     this.disableBackButton();
     this.clearViewContainer();
 
-    console.log( this.Model.getCategories() )
-
     categories = this.Model.getCategories()
+    console.log(categories)
     for (var i=0; i < categories.length; i++) {
-      categories[i] = categories[i].replace('_', ' ')
-      categories[i] = categories[i].capitalize()
-    };
+      categories[i] = {
+        "string": this._sym_to_str(categories[i]),
+        "selector": categories[i]
+      }
+    }
 
-    this.ListView.render( categories );
+    this.ListView.render(categories, this, function(selector, e) {
+      this.switchToSubCategoryView(selector)
+    });
+  }
+
+  this.switchToSubCategoryView = function (subcategoryName) {
+    this.setTitle( this._sym_to_str(subcategoryName) );
+    this.setBackButton( function(){ this.switchToCategoriesView() }.bind(this));
+    this.clearViewContainer();
+
+    categories = this.Model.getSubCategories(subcategoryName)
+    console.log(categories)
+    for (var i=0; i < categories.length; i++) {
+      categories[i] = {
+        "string": this._sym_to_str(categories[i]),
+        "selector": subcategoryName + '/' + categories[i]
+      }
+    }
+
+    this.ListView.render( categories, this, function (selector, e) {
+      console.log(selector.split('/'))
+    });
+  }
+
+  this._sym_to_str = function(sym) {
+    sym = sym.replace(/_/g, ' ');
+    sym = sym.capitalize();
+    return sym;
   }
 
   this.clearViewContainer = function() {
@@ -48,33 +78,44 @@ function JEViewController() {
     this.$viewTitle.innerHTML = newTitle + ':';
   }
   
-  this.disableBackButton = function (callback) {
-    this.$backButton.style.visibility = "hidden"
+  this.disableBackButton = function () {
+    this.$backButton.style.visibility = "hidden";
   }
+  
   this.setBackButton = function (callback) {
-    this.$backButton.style.visibility = "visible"
+    this.$backButton.style.visibility = "visible";
+    this.$backButton.addEventListener('click', callback);
   }
 }
 
 function JEListView(parent) {
-  this._defaultTemplate = '<ul class="emotes-cat">{{list}}</ul>';
+  this._defaultTemplate = function () {
+    // <ul class='emotes-cat'></ul>
+    template = document.createElement('ul');
+    template.setAttribute('id', 'emotes-cat');
+    return template
+  }
 
-  this.render = function(hash) {
-    view = this._defaultTemplate
+  this.render = function(hash, context, callback) {
+    view = this._defaultTemplate();
     
-    listItems = '';
     for (var i=0; i < hash.length; i++) {
-      listItems += '<li>' + hash[i] + '</li>';
+      // <li> hash[i] </li>
+      listItem = document.createElement('li');
+      listItem.innerHTML = hash[i].string;
+      
+      if(callback) {
+        listItem.addEventListener('click', callback.bind(context, hash[i].selector))
+      }
+
+      view.appendChild(listItem);
     }
 
-    view = view.replace('{{list}}', listItems);
-
-    parent.innerHTML += view;
+    parent.appendChild(view);
   }
 }
 
-function JETableView() {
-
+function JETableView(parent) {
 }
 
 function JEModel() {
@@ -90,7 +131,9 @@ function JEModel() {
 
   this._parse = function(e) {
     this._collection = JSON.parse(e.target.responseText);
-    this._loadCallback();
+    if(this._loadCallback) {
+      this._loadCallback();
+    }
   }
 
   this.getCategories = function() {

@@ -192,6 +192,10 @@ function JETableView(parent) {
 
   this._prepareRows = function (groups) {
     // Goal - aesthetically break up the smileys into rows
+    // groups[0] - emoticons that fit in one cell
+    // groups[1] - emoticons that fit in two cells
+    // groups[2] - emoticons that fit in three cells
+    // groups[3] - emoticons that fit in four cells
 
     rows = [];
     curColumn = 0;

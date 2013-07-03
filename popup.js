@@ -1,6 +1,3 @@
-window.$ = document.querySelectorAll.bind(document);
-window.$$ = document.querySelector.bind(document);
-
 String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };

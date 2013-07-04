@@ -165,7 +165,7 @@ function JEAboutView(parent) {
       +    '</p>'
       +    '<hr/>'
       +    '<footer>'
-      +      '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amasing selection of Japanese emoticons.</h5>'
+      +      '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
       +      '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
       +    '</footer>'
       +  '</div>'

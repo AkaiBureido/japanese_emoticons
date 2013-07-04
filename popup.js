@@ -26,6 +26,7 @@ function JEViewController() {
 
     this.ListView = new JEListView( this.$viewContainer );
     this.TableView = new JETableView( this.$viewContainer );
+    this.AboutView = new JEAboutView( this.$viewContainer );
   }
 
   this.awakeFromModelLoad = function() {
@@ -33,9 +34,16 @@ function JEViewController() {
     this.switchToCategoriesView();
   }
 
+  this.switchToAboutView = function () {
+    this.setTitle( "JapaneseEmoticons" );
+    this.setBackButton( function(){ this.switchToCategoriesView() }.bind(this));
+    this.clearViewContainer();
+
+    this.AboutView.render();
+  }
   this.switchToCategoriesView = function () {
     this.setTitle("Categories");
-    this.disableBackButton();
+    this.setAboutButton( function(){ this.switchToAboutView() }.bind(this));
     this.clearViewContainer();
 
     categories = this.Model.getCategories()
@@ -115,12 +123,9 @@ function JEViewController() {
     this.$viewTitle.innerHTML = newTitle + ':';
   }
   
-  this.disableBackButton = function () {
-    this.$backButton.style.visibility = "hidden";
-  }
-  
-  this.setBackButton = function (callback) {
-    this.$backButton.style.visibility = "visible";
+  this.setAboutButton = function (callback) {
+
+    this.$backButton.innerHTML = "?";
     
     if(this._prevBackButtonCallback) {
       this.$backButton.removeEventListener('click', this._prevBackButtonCallback)
@@ -129,6 +134,47 @@ function JEViewController() {
     this.$backButton.addEventListener('click', callback);
     
     this._prevBackButtonCallback = callback;
+  }
+  
+  this.setBackButton = function (callback) {
+    
+    this.$backButton.innerHTML = "Back";
+    
+    if(this._prevBackButtonCallback) {
+      this.$backButton.removeEventListener('click', this._prevBackButtonCallback)
+    }
+
+    this.$backButton.addEventListener('click', callback);
+    
+    this._prevBackButtonCallback = callback;
+  }
+}
+
+
+function JEAboutView(parent) {
+  this._defaultTemplate = function () {
+    about = document.createElement('div');
+    about.setAttribute('id');
+    about.innerHTML  
+      =  '<div id="about">'
+      +    '<p>'
+      +      'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
+      +    '</p>'
+      +    '<p>'
+      +      'To use it simply go through the categories click on the emoji you want and it will be copied to your clipboard.'
+      +    '</p>'
+      +    '<hr/>'
+      +    '<footer>'
+      +      '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amasing selection of Japanese emoticons.</h5>'
+      +      '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
+      +    '</footer>'
+      +  '</div>'
+      return about;
+  }
+
+  this.render = function() {
+    view = this._defaultTemplate();
+    parent.appendChild(view);
   }
 }
 

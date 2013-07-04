@@ -40,7 +40,7 @@ body {
 
 /* Global Interface */
 #container {
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.03)));
+  background-image: url("resourses/squairy_light.png"), -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.03)));
   overflow: hidden;
   font-family:Helvetica,Arial,sans-serif;
   font-size:0.9em;
@@ -154,3 +154,66 @@ body {
   color: white;
 }
 
+#about {
+  margin-top: -12px;
+  padding-top: 200px;
+  background-image: url("resourses/JapaneseEmoticonsBanner.png");
+  background-repeat:no-repeat;
+}
+
+#about h2 {
+  font-size: 1.2em;
+  color:rgb(100,100,100);
+  margin-left:10px;
+}
+#about p {
+  font-family: Helvetica,Arial,sans-serif;
+  text-align: center;
+  color:rgb(100,100,100);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  font-size: 0.8em;
+}
+#about hr {
+  margin-top:20px;
+
+  margin-left:20px;
+  margin-right:20px;
+
+  border: none;
+  border-top:    1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+
+#about footer h4 {
+  font-family: Helvetica,Arial,sans-serif;
+  color:rgb(120,120,120);
+  font-size: 0.8em;
+  text-shadow: 0 1px 0 white;
+  margin-left:10px;
+  text-align: center;
+}
+#about footer h5 {
+  font-family: Helvetica,Arial,sans-serif;
+  color:rgb(100,100,100);
+  font-size: 0.8em;
+  text-shadow: 0 1px 0 white;
+  margin:20px;
+  margin-top:10px;
+}
+#about footer a {
+  text-decoration:none;
+  color:rgb(60,60,60);
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+#about footer a:hover {
+  border-radius:2px;
+  background: rgba(0,0,0,0.08);
+}
+
+#about footer a:active {
+  border-radius:2px;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
+  color: white;
+}

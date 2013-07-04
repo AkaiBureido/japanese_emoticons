@@ -2,6 +2,15 @@ String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };
 
+Array.prototype.rotate = (function() {
+    return function(inc) {
+        for (var l = this.length, inc = (Math.abs(inc) >= l && (inc %= l), inc < 0 && (inc += l), inc), i, x; inc; inc = (Math.ceil(l / inc) - 1) * inc - l + (l = inc))
+        for (i = l; i > inc; x = this[--i], this[i] = this[i - inc], this[i - inc] = x);
+        return this;
+    };
+})();
+
+
 app = new JEViewController();
 window.onready = app.awakeFromLoad()
 
@@ -206,80 +215,114 @@ function JETableView(parent) {
     };
     
     // Second add all of the 2 cell smileys + 2 cell smileys
+    // Or think, think, think, think
+    
     // Goal - we want to somewhat evenly distribute 
     // [4](1 cell) rows
     // [2](2 cell) rows
     // [2](1 cell) + [1](2 cell) rows
+    // [1](3 cell) + [1](1 cell) rows
     
-    // lets forget that we have 3 cell smileys for now
-    // lets see if we have any 2 cell widows
-    // oneCellsLeft = groups[0];
-    // spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
-    // if(spareTwoCells) {
-    //   // If we have a 2 cell spare it would be brilliant to have two 1 cells
-    //   if(oneCellsLeft >= 2) {
-    //       rows.unshift([
-    //           {'text': groups[1].pop(), 'colspan': 2},
-    //           {'text': groups[0].pop(), 'colspan': 1},
-    //           {'text': groups[0].pop(), 'colspan': 1}
-    //       ]);
-    //       oneCellsLeft -= 2;
-    //   // If we are not so very lucky then we'll have to do with stretching one 1 cell
-    //   } else if(oneCellsLeft == 1) {
-    //       rows.unshift([
-    //           {'text': groups[1].pop(), 'colspan': 2},
-    //           {'text': groups[0].pop(), 'colspan': 2},
-    //       ]);
-    //   
-    //   }
-    // }
-    // We have gotten rid of 2 cell widows, now its party time provided we have some 1 cells left
-
-    while(groups[1].length != 0) {
-
-      if(groups[1].length >= 2) {
-          rows.unshift([
-              {'text': groups[1].pop(), 'colspan': 2},
-              {'text': groups[1].pop(), 'colspan': 2}
-          ]);
-      } else {
-        // For the last widow 2 cell smiley add two 1 cell smileys
-        if(groups[0].length >= 2) {
+    // Lets forget that we have 3 cell smileys for now
+    // Lets see if we have any 2 cell widows
+    oneCellsLeft = groups[0];
+    spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
+    savedOneCells = [];
+    if(spareTwoCells) {
+      // If we have a 2 cell spare it would be brilliant to have two 1 cells
+      if(oneCellsLeft >= 2) {
           rows.unshift([
               {'text': groups[1].pop(), 'colspan': 2},
               {'text': groups[0].pop(), 'colspan': 1},
               {'text': groups[0].pop(), 'colspan': 1}
           ]);
-      // If dont have two 1 cell smileys, make widow 1 cell smiley 2 cells wide
-        } else if (groups[0].length == 1) {
+      // If we are not so very lucky then we'll have to do with stretching widow a bit
+      } else if(oneCellsLeft == 1) {
           rows.unshift([
-              {'text': groups[1].pop(), 'colspan': 2},
-              {'text': groups[0].pop(), 'colspan': 2}
+              {'text': groups[1].pop(), 'colspan': 3},
+              {'text': groups[0].pop(), 'colspan': 1},
           ]);
-        // If ran out of 1 cell smileys after widow, make widow 4 cells wide
-        } else if (groups[0].length == 0) {
+      // If we are downright miserable, the best we can do is stretch the widow
+      } else {
           rows.unshift([
               {'text': groups[1].pop(), 'colspan': 4}
           ]);
-        }
       }
     }
 
-    // // Third add 3 cell smileys + 1 cell smileys
-    // while(groups[2].length != 0) {
-    //   // If we have 1 cell smileys add one after the 3 cell smiley
-    //   if(groups[0].length != 0) {
-    //     rows.unshift([
-    //         {'text': groups[2].pop(), 'colspan': 3},
-    //         {'text': groups[0].pop(), 'colspan': 1},
-    //     ]);
-    //   // If we dont make smiley 4 cells wide
-    //   } else {
-    //     rows.unshift([
-    //         {'text': groups[2].pop(), 'colspan': 4},
-    //     ]);
-    //   }
-    // }
+    // We have gotten rid of 2 cell widows, now its party time provided we have some 1 cells left 
+    oneCellsLeft = groups[0];
+    if(oneCellsLeft) {
+      // If we are lucky then lets think a litle more
+      // Lets remind ourselved what we are actually trying to do
+      // Goal - we want to somewhat evenly distribute 
+      // [4](1 cell) rows
+      // [2](2 cell) rows
+      // [2](1 cell) + [1](2 cell) rows
+      // [1](3 cell) + [1](1 cell) rows
+
+      // Start with simple:
+      // [1](3 cell) + [1](1 cell) rows
+      while(groups[2].length != 0) {
+        // If we have 1 cell smileys add one after the 3 cell smiley
+        if(groups[0].length != 0) {
+          rows.unshift([
+              {'text': groups[2].pop(), 'colspan': 3},
+              {'text': groups[0].pop(), 'colspan': 1},
+          ]);
+        // If we dont make smiley 4 cells wide
+        } else {
+          rows.unshift([
+              {'text': groups[2].pop(), 'colspan': 4},
+          ]);
+        }
+      }
+
+      //Dump savedOneCells back in
+      destiny = 0;
+      canBalance = true;
+      while(groups[1].length != 0) {
+        if(destiny % 3 == 0 && canBalance) {
+          if(groups[0].length >= 4 && groups[1].length >= 2) {
+            rows.unshift([
+                {'text': groups[1].pop(), 'colspan': 2},
+                {'text': groups[0].pop(), 'colspan': 1},
+                {'text': groups[0].pop(), 'colspan': 1}
+            ],[
+                {'text': groups[1].pop(), 'colspan': 2},
+                {'text': groups[0].pop(), 'colspan': 1},
+                {'text': groups[0].pop(), 'colspan': 1}
+            ]);
+          } else {
+            canBalance = false;
+          }
+        } else {
+            rows.unshift([
+                {'text': groups[1].pop(), 'colspan': 2},
+                {'text': groups[1].pop(), 'colspan': 2}
+            ]);
+        }
+
+        destiny++;
+      }
+
+    } else {
+      // If we are unlucky we will just stack them side by side
+      while(groups[1].length != 0) {
+        rows.unshift([
+            {'text': groups[1].pop(), 'colspan': 3},
+            {'text': groups[0].pop(), 'colspan': 1},
+        ]);
+      }
+    }
+
+    // spareOneCells = groups[0].length - Math.floor(groups[0].length/4) * 4;
+    // // Lets pretend we have achive equilibrium
+    // // I am not sure how to do it ^^
+    // for(var i=0; i < spareOneCells; i++) {
+    //   savedOneCells.push(groups[0].shift())
+    // };
+    
 
     // Forth if there are any 1 cell smileys left display them normally
     while(groups[0].length != 0) {
@@ -311,8 +354,11 @@ function JETableView(parent) {
         ]);
       }
     }
-    //
+
     // For extra eye candy rotate each array by curRow
+    for (var i=0; i < rows.length; i++) {
+      rows[i].rotate(i);
+    };
 
     return rows;
   }

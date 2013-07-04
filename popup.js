@@ -195,60 +195,152 @@ function JETableView(parent) {
     // groups[3] - emoticons that fit in four cells
 
     rows = [];
-    curColumn = 0;
-    curRow = 0;
-    i = 0;
-    rows[0] = [];
-    while(true) {
 
-      // Algorithm:
-      // First add all the 4 cell smileys
-      // Second add all of the 2 cell smileys + 2 cell smileys
-      //   On the last widow 2 cell smiley add two 1 cell smileys
-      //   If ran out of 1 cell smileys display the rest as 4 cells
-      // Third add 3 cell smileys + 1 cell smileys
-      //   If ran out of 1 cell smileys display the rest as 4 cells
-      // Forth if there are any 1 cell smileys left display them normally
-      //   exept if there are widows at the end
-      //   If 3 widows let last one take two colums
-      //   If 2 widows let them both take 2 columns
-      //   If 1 widow let it take 4 columns
-      //
-      // For extra eye candy rotate each array by curRow
 
-      smiley = groups[0].shift(1);
-      colspan = 1;
-      
-      curColumn += colspan;
-      rows[curRow].push({
-        'text': smiley,
-        'colspan': 1
-      });
+    // Algorithm:
+    // First add all the 4 cell smileys
+    while(groups[3].length != 0) {
+      rows.unshift([
+          {'text': groups[3].pop(), 'colspan': 4}
+      ]);
+    };
+    
+    // Second add all of the 2 cell smileys + 2 cell smileys
+    // Goal - we want to somewhat evenly distribute 
+    // [4](1 cell) rows
+    // [2](2 cell) rows
+    // [2](1 cell) + [1](2 cell) rows
+    
+    // lets forget that we have 3 cell smileys for now
+    // lets see if we have any 2 cell widows
+    // oneCellsLeft = groups[0];
+    // spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
+    // if(spareTwoCells) {
+    //   // If we have a 2 cell spare it would be brilliant to have two 1 cells
+    //   if(oneCellsLeft >= 2) {
+    //       rows.unshift([
+    //           {'text': groups[1].pop(), 'colspan': 2},
+    //           {'text': groups[0].pop(), 'colspan': 1},
+    //           {'text': groups[0].pop(), 'colspan': 1}
+    //       ]);
+    //       oneCellsLeft -= 2;
+    //   // If we are not so very lucky then we'll have to do with stretching one 1 cell
+    //   } else if(oneCellsLeft == 1) {
+    //       rows.unshift([
+    //           {'text': groups[1].pop(), 'colspan': 2},
+    //           {'text': groups[0].pop(), 'colspan': 2},
+    //       ]);
+    //   
+    //   }
+    // }
+    // We have gotten rid of 2 cell widows, now its party time provided we have some 1 cells left
 
-      // if(groups[0].length == 0) {
-      //   break;
-      // }
+    while(groups[1].length != 0) {
 
-      // every time column reaches 4 that means we have to go to 
-      if(curColumn == 4) {
-        curRow++;
-        rows[curRow] = [];
-        curColumn = 0;
+      if(groups[1].length >= 2) {
+          rows.unshift([
+              {'text': groups[1].pop(), 'colspan': 2},
+              {'text': groups[1].pop(), 'colspan': 2}
+          ]);
+      } else {
+        // For the last widow 2 cell smiley add two 1 cell smileys
+        if(groups[0].length >= 2) {
+          rows.unshift([
+              {'text': groups[1].pop(), 'colspan': 2},
+              {'text': groups[0].pop(), 'colspan': 1},
+              {'text': groups[0].pop(), 'colspan': 1}
+          ]);
+      // If dont have two 1 cell smileys, make widow 1 cell smiley 2 cells wide
+        } else if (groups[0].length == 1) {
+          rows.unshift([
+              {'text': groups[1].pop(), 'colspan': 2},
+              {'text': groups[0].pop(), 'colspan': 2}
+          ]);
+        // If ran out of 1 cell smileys after widow, make widow 4 cells wide
+        } else if (groups[0].length == 0) {
+          rows.unshift([
+              {'text': groups[1].pop(), 'colspan': 4}
+          ]);
+        }
       }
     }
 
+    // // Third add 3 cell smileys + 1 cell smileys
+    // while(groups[2].length != 0) {
+    //   // If we have 1 cell smileys add one after the 3 cell smiley
+    //   if(groups[0].length != 0) {
+    //     rows.unshift([
+    //         {'text': groups[2].pop(), 'colspan': 3},
+    //         {'text': groups[0].pop(), 'colspan': 1},
+    //     ]);
+    //   // If we dont make smiley 4 cells wide
+    //   } else {
+    //     rows.unshift([
+    //         {'text': groups[2].pop(), 'colspan': 4},
+    //     ]);
+    //   }
+    // }
+
+    // Forth if there are any 1 cell smileys left display them normally
+    while(groups[0].length != 0) {
+      if(groups[0].length >= 4) {
+        rows.unshift([
+            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[0].pop(), 'colspan': 1}
+        ]);
+      // exept if there are widows at the end
+      // If 3 widows let last one take two colums
+      } else if(groups[0].length == 3) {
+        rows.unshift([
+            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[0].pop(), 'colspan': 2}
+        ]);
+      // If 2 widows let them both take 2 columns
+      } else if(groups[0].length == 2) {
+        rows.unshift([
+            {'text': groups[0].pop(), 'colspan': 2},
+            {'text': groups[0].pop(), 'colspan': 2}
+        ]);
+      // If 1 widow let it take 4 columns
+      } else if(groups[0].length == 1) {
+        rows.unshift([
+            {'text': groups[0].pop(), 'colspan': 4}
+        ]);
+      }
+    }
+    //
+    // For extra eye candy rotate each array by curRow
+
     return rows;
+  }
+
+  this._spareOneCells = function (groups) {
+    // Ammount of one cells that will make table unbalanced
+    spareOneCells = groups[0].length - Math.floor(groups[0].length/4) * 4;
+    return spareOneCells;
+  }
+
+  this._spareTwoCells = function (groups) {
+    // Ammount of two cells that will make table unbalanced
+    spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
+    return spareTwoCells;
   }
 
   this._determineColspan = function(hash) {
     faketable = this._defaultTemplate();
     row = document.createElement('tr');
     cell = document.createElement('td');
+    row.appendChild(document.createElement('td'));
+    row.appendChild(document.createElement('td'));
+    row.appendChild(document.createElement('td'));
     row.appendChild(cell);
     faketable.appendChild(row);
     parent.appendChild(faketable);
 
-    cellWidth = cell.clientWidth/4 - 4;
+    cellWidth = cell.clientWidth;
 
     // Breaking up into 4 groups
     groups = []
@@ -261,11 +353,11 @@ function JETableView(parent) {
       metrics = this._calculateTextWidth(hash[i], cell);
       if(metrics[1] < (cellWidth - 4)) {
         groups[0].push(hash[i]);
-      } else if(metrics[1] < (cellWidth*2 - 4)) {
+      } else if(metrics[1] < (cellWidth*2 - 5)) {
         groups[1].push(hash[i]);
-      } else if(metrics[1] < (cellWidth*3 - 4)) {
+      } else if(metrics[1] < (cellWidth*3 - 5)) {
         groups[2].push(hash[i]);
-      } else if(metrics[1] < (cellWidth*4 - 4)) {
+      } else if(metrics[1] < (cellWidth*4 - 5)) {
         groups[3].push(hash[i]);
       }
     }
@@ -275,7 +367,7 @@ function JETableView(parent) {
   }
 
   this._calculateTextWidth = function(string, parent) {
-    var container = document.createElement('div')
+    var container = document.createElement('span')
     container.setAttribute('style', 'position: absolute; visibility: hidden; height: auto; width: auto;')
 
     parent.appendChild(container)

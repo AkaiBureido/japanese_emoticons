@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "JapaneseEmoticons",
-  "description": "This extension allows you to utilise JpaneseEmotions.com collection without having to go tho the website.",
-  "version": "0.1",
+  "description": "This extension allows you to utilise JapaneseEmoticons.net collection without having to go to the website.",
+  "version": "1.0",
 
   "icons": { "128": "appicon128.png" },
 

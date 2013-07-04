@@ -161,7 +161,7 @@ function JEAboutView(parent) {
       +      'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
       +    '</p>'
       +    '<p>'
-      +      'To use it simply go through the categories click on the emoji you want and it will be copied to your clipboard.'
+      +      'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard.'
       +    '</p>'
       +    '<hr/>'
       +    '<footer>'

@@ -3,7 +3,10 @@
 
   "name": "JapaneseEmoticons",
   "description": "A humongous library of excellent text-based emojis just a click away.",
-  "version": "1.1.3",
+  "version": "1.1.5",
+
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+
 
 "icons": { "16": "appicon16.png",
            "48": "appicon48.png",

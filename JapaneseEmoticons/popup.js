@@ -10,6 +10,17 @@ Array.prototype.rotate = (function() {
     };
 })();
 
+// Yes... Lame but can't help it... 気になります！
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-42243080-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 
 app = new JEViewController();
 window.onready = app.awakeFromLoad()
@@ -56,7 +67,8 @@ function JEViewController() {
     }
 
     this.ListView.render(categories, this, function(selector, e) {
-      this.switchToSubCategoryView(selector)
+      this.switchToSubCategoryView(selector);
+      _gaq.push(['_trackEvent', selector, 'clicked']);
     });
   }
 
@@ -78,7 +90,8 @@ function JEViewController() {
       path = selector.split('/');
       console.log(path)
       
-      this.switchToEmoticonTableView(path[0],path[1])
+      this.switchToEmoticonTableView(path[0],path[1]);
+      _gaq.push(['_trackEvent', selector, 'clicked']);
     });
   }
 
@@ -94,6 +107,7 @@ function JEViewController() {
     this.TableView.render(emoticons, this, function(smiley, e) {
       console.log(smiley);
       this.copyToClipboard(smiley);
+      _gaq.push(['_trackEvent', this.$viewTitle.innerHTML.replace(':','').replace(/ /g, '_').toLowerCase() + '/' + smiley, 'copied']);
     });
   }
 
@@ -510,3 +524,4 @@ function JEModel() {
     }
   }
 }
+

@@ -154,21 +154,19 @@ function JEViewController() {
 function JEAboutView(parent) {
   this._defaultTemplate = function () {
     about = document.createElement('div');
-    about.setAttribute('id');
+    about.setAttribute('id', 'about');
     about.innerHTML  
-      =  '<div id="about">'
-      +    '<p>'
-      +      'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
-      +    '</p>'
-      +    '<p>'
-      +      'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard.'
-      +    '</p>'
-      +    '<hr/>'
-      +    '<footer>'
-      +      '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
-      +      '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
-      +    '</footer>'
-      +  '</div>'
+      =  '<p>'
+      +    'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
+      +  '</p>'
+      +  '<p>'
+      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard.'
+      +  '</p>'
+      +  '<hr/>'
+      +  '<footer>'
+      +    '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
+      +    '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
+      +  '</footer>'
       return about;
   }
 

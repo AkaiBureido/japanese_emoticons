@@ -2,10 +2,12 @@
   "manifest_version": 2,
 
   "name": "JapaneseEmoticons",
-  "description": "This extension allows you to utilise JapaneseEmoticons.net collection without having to go to the website.",
-  "version": "1.0",
+  "description": "A humongous library of excellent text-based emojis just a click away.",
+  "version": "1.1.3",
 
-  "icons": { "128": "appicon128.png" },
+"icons": { "16": "appicon16.png",
+           "48": "appicon48.png",
+          "128": "appicon128.png" },
 
   "browser_action": {
     "default_icon": "icon.png",

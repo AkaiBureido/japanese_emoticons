@@ -64,7 +64,7 @@ body {
   text-shadow: 0px 1px rgba(255, 255, 255, 0.99);
 }
 
-#topbar .back-button {
+.back-button {
   color:  rgb(180,180,180);
   border-radius: 2px;
   padding:2px 6px;
@@ -72,11 +72,11 @@ body {
   vertical-align: middle;
   cursor: pointer;
 }
-#topbar .back-button:hover {
-  color:  rgb(130,130,130);
+.back-button:hover {
+  color:  rgb(130,130,130);http://nonlogicaldev.tumblr.com/
   background: rgba(0,0,0,0.08);
 }
-#topbar .back-button:active {
+.back-button:active {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
   color: white;
 }
@@ -200,20 +200,55 @@ body {
   margin:20px;
   margin-top:10px;
 }
-#about footer a {
+a {
   text-decoration:none;
   color:rgb(60,60,60);
   font-weight: bold;
   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
-#about footer a:hover {
+a:hover {
   border-radius:2px;
   background: rgba(0,0,0,0.08);
 }
 
-#about footer a:active {
+a:active {
   border-radius:2px;
   text-shadow: 0 1px 0 rgba(0,0,0,0.5);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(57,155,239,1)), color-stop(100%,rgba(0,107,219,0.87)));
   color: white;
+}
+
+.popup {
+  margin:0;
+  font-size: 0.9em;
+  background:rgba(0,0,0,0.05);
+  border-radius:2px;
+  line-height:0em;
+
+  -webkit-animation: flyin 0.9s ease forwards;
+  -webkit-animation-delay:0.5s; /* Safari and Chrome */
+  opacity: 0;
+}
+.popup .message {
+  width: 280px;
+  padding: 5px;
+  float:left;
+  color:rgba(0,0,0,0.5);
+  text-shadow: 0px 1px rgba(255,255,255,0.5);
+}
+.popup .message ul {
+  margin-top:5px;
+}
+.popup h4 {
+  padding:0;
+  margin:5px;
+  margin-left:15px;
+}
+.popup .dissmiss {
+  float:right;
+}
+
+@-webkit-keyframes flyin {
+  from { opacity:0; }
+  to { opacity:1; line-height:1.2em; margin:5px}
 }

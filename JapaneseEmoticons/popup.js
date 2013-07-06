@@ -46,6 +46,8 @@ function JEViewController() {
   }
 
   this.switchToAboutView = function () {
+    _gaq.push(['_trackEvent', 'about_page', 'viewed']);
+    
     this.setTitle( "JapaneseEmoticons" );
     this.setBackButton( function(){ this.switchToCategoriesView() }.bind(this));
     this.clearViewContainer();
@@ -68,11 +70,12 @@ function JEViewController() {
 
     this.ListView.render(categories, this, function(selector, e) {
       this.switchToSubCategoryView(selector);
-      _gaq.push(['_trackEvent', selector, 'clicked']);
     });
   }
 
   this.switchToSubCategoryView = function (subcategoryName) {
+    _gaq.push(['_trackEvent', subcategoryName, 'viewed']);
+    
     this.setTitle( this._sym_to_str(subcategoryName) );
     this.setBackButton( function(){ this.switchToCategoriesView() }.bind(this));
     this.clearViewContainer();
@@ -91,11 +94,12 @@ function JEViewController() {
       console.log(path)
       
       this.switchToEmoticonTableView(path[0],path[1]);
-      _gaq.push(['_trackEvent', selector, 'clicked']);
     });
   }
 
   this.switchToEmoticonTableView = function (categoryName, subcategoryName) {
+    _gaq.push(['_trackEvent', categoryName+'/'+subcategoryName, 'viewed']);
+    
     this.setTitle( this._sym_to_str(subcategoryName) );
     this.setBackButton( function(e){
       this.switchToSubCategoryView(categoryName);
@@ -107,7 +111,7 @@ function JEViewController() {
     this.TableView.render(emoticons, this, function(smiley, e) {
       console.log(smiley);
       this.copyToClipboard(smiley);
-      _gaq.push(['_trackEvent', this.$viewTitle.innerHTML.replace(':','').replace(/ /g, '_').toLowerCase() + '/' + smiley, 'copied']);
+      _gaq.push(['_trackEvent', this.$viewTitle.textContent.replace(':','').replace(/ /g, '_').toLowerCase() + '/' + smiley, 'copied']);
     });
   }
 

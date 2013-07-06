@@ -1,3 +1,14 @@
+debugmode = true;
+
+//TODO: Implement tutorial.
+//TODO: Bubble up emoticons if they are often used. 
+//      10 click is equal to 0.1 weight in shuffling.
+//TODO: Add a settings page to allow to opt into bubble up.
+
+
+newsflashHtml = 'Hello my dearest user. </br>Thank you for giving this extension a try. </br>'
+              + 'If you want, you can find more info on my blog: <a href="#">NonLogicalDev</a>'
+
 String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };
@@ -16,14 +27,31 @@ _gaq.push(['_setAccount', 'UA-42243080-2']);
 _gaq.push(['_trackPageview']);
 
 (function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = 'https://ssl.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  if(!debugmode) {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  }
 })();
 
 
 app = new JEViewController();
 window.onready = app.awakeFromLoad()
+
+if(chrome.app.getDetails().version != localStorage.currentVersion){
+  localStorage.clear();
+}
+
+if(localStorage.readTheTutorial == "true"){
+  tutorial = document.querySelector('#tutorial');
+  tutorial.parentNode.removeChild(tutorial);
+} else {
+  document.querySelector('#tutorial .back-button').addEventListener('click', function(e) {
+    tutorial = document.querySelector('#tutorial');
+    tutorial.parentNode.removeChild(tutorial);
+    localStorage.readTheTutorial = "true";
+  });
+}
 
 function JEViewController() {
   // viewTitle, backButton, viewContainer, model
@@ -38,11 +66,18 @@ function JEViewController() {
     this.ListView = new JEListView( this.$viewContainer );
     this.TableView = new JETableView( this.$viewContainer );
     this.AboutView = new JEAboutView( this.$viewContainer );
+    this.NewsflashView = new JENewsflashView( this.$newsflash );
   }
 
   this.awakeFromModelLoad = function() {
     console.log("model ready");
     this.switchToCategoriesView();
+  }
+
+  this.displayNewsFlash = function() {
+    _gaq.push(['_trackEvent', 'tutorial', 'viewed']);
+
+    //TODO: Implement.
   }
 
   this.switchToAboutView = function () {
@@ -168,9 +203,21 @@ function JEViewController() {
   }
 }
 
+function JENewsflashView(parent) {
+  this._defaultTemplate = function() {
+    newsfalsh = document.createElement('div');
+    newsfalsh.setAttribute('id', 'message');
+
+    return newsfalsh;
+  }
+
+  this.render = function(htmlstring) {
+    //TODO: Implement
+  }
+}
 
 function JEAboutView(parent) {
-  this._defaultTemplate = function () {
+  this._defaultTemplate = function() {
     about = document.createElement('div');
     about.setAttribute('id', 'about');
     about.innerHTML  
@@ -178,7 +225,8 @@ function JEAboutView(parent) {
       +    'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
       +  '</p>'
       +  '<p>'
-      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard.'
+      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard. </br></br>'
+      +    'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a>'
       +  '</p>'
       +  '<hr/>'
       +  '<footer>'
@@ -195,7 +243,7 @@ function JEAboutView(parent) {
 }
 
 function JEListView(parent) {
-  this._defaultTemplate = function () {
+  this._defaultTemplate = function() {
     // <ul class='emotes-cat'></ul>
     template = document.createElement('ul');
     template.setAttribute('id', 'emotes-cat');
@@ -222,7 +270,7 @@ function JEListView(parent) {
 }
 
 function JETableView(parent) {
-  this._defaultTemplate = function () {
+  this._defaultTemplate = function() {
     // <table id='emotes'></table>
     template = document.createElement('table');
     template.setAttribute('id', 'emotes');
@@ -258,7 +306,7 @@ function JETableView(parent) {
     parent.appendChild(view)
   }
 
-  this._prepareRows = function (groups) {
+  this._prepareRows = function(groups) {
     // Goal - aesthetically break up the smileys into rows
     // groups[0] - emoticons that fit in one cell
     // groups[1] - emoticons that fit in two cells
@@ -425,13 +473,13 @@ function JETableView(parent) {
     return rows;
   }
 
-  this._spareOneCells = function (groups) {
+  this._spareOneCells = function(groups) {
     // Ammount of one cells that will make table unbalanced
     spareOneCells = groups[0].length - Math.floor(groups[0].length/4) * 4;
     return spareOneCells;
   }
 
-  this._spareTwoCells = function (groups) {
+  this._spareTwoCells = function(groups) {
     // Ammount of two cells that will make table unbalanced
     spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
     return spareTwoCells;
@@ -529,3 +577,4 @@ function JEModel() {
   }
 }
 
+localStorage.currentVersion = chrome.app.getDetails().version

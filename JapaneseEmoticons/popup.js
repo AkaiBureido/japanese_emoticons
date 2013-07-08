@@ -1,13 +1,20 @@
 debugmode = true;
 
-//TODO: Implement tutorial.
+// Version tracking has started with 1.1.7
+if(chrome.app.getDetails().version != localStorage.currentVersion){
+  //This is a place for migrations
+  //As of 1.1.7 keys:
+  // - readTheTutorial # indicates the user have thead the tutorial
+
+
+  // localStorage.clear();
+}
+
+//TODO: Implement tutorial. [done]
+//TODO: Implement tutorial. In an MVC way. [done]
 //TODO: Bubble up emoticons if they are often used. 
 //      10 click is equal to 0.1 weight in shuffling.
 //TODO: Add a settings page to allow to opt into bubble up.
-
-
-newsflashHtml = 'Hello my dearest user. </br>Thank you for giving this extension a try. </br>'
-              + 'If you want, you can find more info on my blog: <a href="#">NonLogicalDev</a>'
 
 String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
@@ -21,63 +28,81 @@ Array.prototype.rotate = (function() {
     };
 })();
 
-// Yes... Lame but can't help it... 気になります！
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-42243080-2']);
-_gaq.push(['_trackPageview']);
+var localisation = {}
+localisation['htmlstrings'] = {
+  'en': {
+    'about_page': 
+         '<p>'
+      +    'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
+      +  '</p>'
+      +  '<p>'
+      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard. </br>'
+      +    '</br>'
+      +    'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a>'
+      +  '</p>'
+      +  '<hr/>'
+      +  '<footer>'
+      +    '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
+      +    '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
+      +  '</footer>',
 
-(function() {
-  if(!debugmode) {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    'tutorial_popup':
+          'Hello my dearest new user! </br>'
+      +   'Thank you for giving this extension a try. </br>'
+      +   'Using it is very simple, try it:'
+      +   '<ul>'
+      +     '<li> Click on the <strong>Positive Feelings</strong> category </li>'
+      +     '<li> Then click on <strong>Happy or Joyfull</strong> </li>'
+      +     '<li> Finally, click on any emoji you like and it will be automatically copied straight into the clipboard </li>'
+      +     '<li> Now go anywhere you want the emoji and simply paste</li>'
+      +   '</ul>'
+      +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a>'
+  },
+  'jp': {
+    'about_page': '',
+    'tutorial_popup': ''
   }
-})();
+}
 
+// localisation['category_names'] = {
+//   'jp': {
+//      
+//   }
+// }
+
+var htmlstrings = localisation['htmlstrings']['en'];
 
 app = new JEViewController();
 window.onready = app.awakeFromLoad()
 
-if(chrome.app.getDetails().version != localStorage.currentVersion){
-  localStorage.clear();
-}
-
-if(localStorage.readTheTutorial == "true"){
-  tutorial = document.querySelector('#tutorial');
-  tutorial.parentNode.removeChild(tutorial);
-} else {
-  document.querySelector('#tutorial .back-button').addEventListener('click', function(e) {
-    tutorial = document.querySelector('#tutorial');
-    tutorial.parentNode.removeChild(tutorial);
-    localStorage.readTheTutorial = "true";
-  });
-}
-
 function JEViewController() {
   // viewTitle, backButton, viewContainer, model
   this.awakeFromLoad = function() {
-    this.$viewTitle = document.querySelector('#topbar .view-title');
-    this.$backButton = document.querySelector('#topbar .back-button');
+    this.$viewTitle     = document.querySelector('#topbar .view-title');
+    this.$backButton    = document.querySelector('#topbar .button');
     this.$viewContainer = document.querySelector('#view-container');
+    this.$popup         = document.querySelector('#popup')
 
     this.Model = new JEModel();
     this.Model.inilialise( this.awakeFromModelLoad.bind(this) );
 
-    this.ListView = new JEListView( this.$viewContainer );
-    this.TableView = new JETableView( this.$viewContainer );
-    this.AboutView = new JEAboutView( this.$viewContainer );
-    this.NewsflashView = new JENewsflashView( this.$newsflash );
+    this.ListView      = new JEListView( this.$viewContainer );
+    this.TableView     = new JETableView( this.$viewContainer );
+    this.AboutView     = new JEAboutView( this.$viewContainer );
   }
 
   this.awakeFromModelLoad = function() {
     console.log("model ready");
+    this.clearPopup();
+   
+    if(localStorage.readTheTutorial != 'true') {
+      this.displayPopup(htmlstrings['tutorial_popup'], 'tutorial', function(){
+        this.clearPopup();
+        localStorage.readTheTutorial = true;
+      }.bind(this));
+    }
+    
     this.switchToCategoriesView();
-  }
-
-  this.displayNewsFlash = function() {
-    _gaq.push(['_trackEvent', 'tutorial', 'viewed']);
-
-    //TODO: Implement.
   }
 
   this.switchToAboutView = function () {
@@ -89,6 +114,7 @@ function JEViewController() {
 
     this.AboutView.render();
   }
+
   this.switchToCategoriesView = function () {
     this.setTitle("Categories");
     this.setAboutButton( function(){ this.switchToAboutView() }.bind(this));
@@ -142,7 +168,8 @@ function JEViewController() {
     this.clearViewContainer();
     
     emoticons = this.Model.getEmoticonList(path[0],path[1]);
-    
+   
+    // TODO: Find a way to delegate cat/subcat to the callback.
     this.TableView.render(emoticons, this, function(smiley, e) {
       console.log(smiley);
       this.copyToClipboard(smiley);
@@ -170,6 +197,34 @@ function JEViewController() {
 
   this.clearViewContainer = function() {
     this.$viewContainer.innerHTML = "";
+  }
+
+  this.displayPopup = function(content, category, dismiss_callback) {
+    _gaq.push(['_trackEvent', 'popup/' + category, 'diplayed']);
+
+    message       = this.$popup.querySelector('.message');
+    dismissButton = this.$popup.querySelector('.dismiss');
+
+    message.innerHTML = content;
+
+    if(this._prevPopupDismissCallback) {
+      dismissButton.addEventListener('click', dismiss_callback );
+    }
+
+    dismissButton.addEventListener('click', dismiss_callback );
+
+    this._prevPopupDismissCallback = dismiss_callback;
+
+    this.$popup.style.display = "";
+  }
+
+  this.clearPopup = function() {
+    _gaq.push(['_trackEvent', 'popup', 'cleared']);
+  
+    message       = this.$popup.querySelector('.message');
+    
+    message.innerHTML = "";
+    this.$popup.style.display = "none";
   }
 
   this.setTitle = function(newTitle) {
@@ -203,37 +258,12 @@ function JEViewController() {
   }
 }
 
-function JENewsflashView(parent) {
-  this._defaultTemplate = function() {
-    newsfalsh = document.createElement('div');
-    newsfalsh.setAttribute('id', 'message');
-
-    return newsfalsh;
-  }
-
-  this.render = function(htmlstring) {
-    //TODO: Implement
-  }
-}
-
 function JEAboutView(parent) {
   this._defaultTemplate = function() {
     about = document.createElement('div');
     about.setAttribute('id', 'about');
-    about.innerHTML  
-      =  '<p>'
-      +    'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
-      +  '</p>'
-      +  '<p>'
-      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard. </br></br>'
-      +    'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a>'
-      +  '</p>'
-      +  '<hr/>'
-      +  '<footer>'
-      +    '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
-      +    '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
-      +  '</footer>'
-      return about;
+    about.innerHTML = htmlstrings['about_page'];
+    return about;
   }
 
   this.render = function() {
@@ -576,5 +606,18 @@ function JEModel() {
     }
   }
 }
+
+// Yes... Lame but can't help it... 気になります！
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-42243080-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  if(!debugmode) {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  }
+})();
 
 localStorage.currentVersion = chrome.app.getDetails().version

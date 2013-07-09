@@ -2,16 +2,15 @@ debugmode = true;
 
 // Version tracking has started with 1.1.7
 if(chrome.app.getDetails().version != localStorage.currentVersion){
-  //This is a place for migrations
+  //This is a place for migrations shall they ever be needed
   //As of 1.1.7 keys:
   // - readTheTutorial # indicates the user have thead the tutorial
 
-
   // localStorage.clear();
+  localStorage.currentVersion = chrome.app.getDetails().version
 }
 
-//TODO: Implement tutorial. [done]
-//TODO: Implement tutorial. In an MVC way. [done]
+//TODO: Break up about view into settings view and about view.
 //TODO: Bubble up emoticons if they are often used. 
 //      10 click is equal to 0.1 weight in shuffling.
 //TODO: Add a settings page to allow to opt into bubble up.
@@ -44,6 +43,7 @@ localisation['htmlstrings'] = {
       +  '<footer>'
       +    '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
       +    '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
+      +    '<p>version: ' + localStorage.currentVersion + '<p>'
       +  '</footer>',
 
     'tutorial_popup':
@@ -64,12 +64,6 @@ localisation['htmlstrings'] = {
   }
 }
 
-// localisation['category_names'] = {
-//   'jp': {
-//      
-//   }
-// }
-
 var htmlstrings = localisation['htmlstrings']['en'];
 
 app = new JEViewController();
@@ -81,7 +75,7 @@ function JEViewController() {
     this.$viewTitle     = document.querySelector('#topbar .view-title');
     this.$backButton    = document.querySelector('#topbar .button');
     this.$viewContainer = document.querySelector('#view-container');
-    this.$popup         = document.querySelector('#popup')
+    this.$popup         = document.querySelector('#popup');
 
     this.Model = new JEModel();
     this.Model.inilialise( this.awakeFromModelLoad.bind(this) );
@@ -97,7 +91,7 @@ function JEViewController() {
    
     if(localStorage.readTheTutorial != 'true') {
       this.displayPopup(htmlstrings['tutorial_popup'], 'tutorial', function(){
-        this.clearPopup();
+        this.clearPopup('tutorial');
         localStorage.readTheTutorial = true;
       }.bind(this));
     }
@@ -218,8 +212,8 @@ function JEViewController() {
     this.$popup.style.display = "";
   }
 
-  this.clearPopup = function() {
-    _gaq.push(['_trackEvent', 'popup', 'cleared']);
+  this.clearPopup = function(category) {
+    _gaq.push(['_trackEvent', 'popup/' + category , 'cleared']);
   
     message       = this.$popup.querySelector('.message');
     
@@ -390,8 +384,9 @@ function JETableView(parent) {
       }
     }
 
-    // We have gotten rid of 2 cell widows, now its party time provided we have some 1 cells left 
-    oneCellsLeft = groups[0];
+    // We have gotten rid of 2 cell widows, now its party time provided we have some 1 cells left
+    // We have to deal with 3 cell ones and 2 cell ones
+    oneCellsLeft = groups[0].length;
     if(oneCellsLeft) {
       // If we are lucky then lets think a litle more
       // Lets remind ourselved what we are actually trying to do
@@ -418,9 +413,10 @@ function JETableView(parent) {
         }
       }
 
-      //Dump savedOneCells back in
-      destiny = 0;
-      canBalance = true;
+      destiny = 0; // mystery counter that will sort of randomise smiley locations
+      canBalance = true; // Indicator that we have at least four 1 cells and two 2 cells
+      
+      //NOTE: The number of 2 cells at this point HAS TO BE EVEN, we have dealt with it already
       while(groups[1].length != 0) {
         if(destiny % 3 == 0 && canBalance) {
           if(groups[0].length >= 4 && groups[1].length >= 2) {
@@ -448,10 +444,11 @@ function JETableView(parent) {
 
     } else {
       // If we are unlucky we will just stack them side by side
+      //NOTE: The number of 2 cells at this point HAS TO BE EVEN, we have dealt with it already
       while(groups[1].length != 0) {
         rows.unshift([
-            {'text': groups[1].pop(), 'colspan': 3},
-            {'text': groups[0].pop(), 'colspan': 1},
+            {'text': groups[1].pop(), 'colspan': 2},
+            {'text': groups[1].pop(), 'colspan': 2}
         ]);
       }
     }
@@ -501,18 +498,6 @@ function JETableView(parent) {
     };
 
     return rows;
-  }
-
-  this._spareOneCells = function(groups) {
-    // Ammount of one cells that will make table unbalanced
-    spareOneCells = groups[0].length - Math.floor(groups[0].length/4) * 4;
-    return spareOneCells;
-  }
-
-  this._spareTwoCells = function(groups) {
-    // Ammount of two cells that will make table unbalanced
-    spareTwoCells = groups[1].length - Math.floor(groups[1].length/2) * 2;
-    return spareTwoCells;
   }
 
   this._determineColspan = function(hash) {
@@ -620,4 +605,3 @@ _gaq.push(['_trackPageview']);
   }
 })();
 
-localStorage.currentVersion = chrome.app.getDetails().version

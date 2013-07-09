@@ -1,4 +1,4 @@
-debugmode = false;
+debugmode = true;
 
 // Version tracking has started with 1.1.7
 if(chrome.app.getDetails().version != localStorage.currentVersion){

@@ -1,10 +1,10 @@
-debugmode = true;
+debugmode = false;
 
 // Version tracking has started with 1.1.7
 if(chrome.app.getDetails().version != localStorage.currentVersion){
   //This is a place for migrations shall they ever be needed
   //As of 1.1.7 keys:
-  // - readTheTutorial # indicates the user have thead the tutorial
+  // - readTheTutorial # indicates the user have read the tutorial
 
   // localStorage.clear();
   localStorage.currentVersion = chrome.app.getDetails().version
@@ -87,8 +87,9 @@ function JEViewController() {
 
   this.awakeFromModelLoad = function() {
     console.log("model ready");
+  
     this.clearPopup();
-   
+
     if(localStorage.readTheTutorial != 'true') {
       this.displayPopup(htmlstrings['tutorial_popup'], 'tutorial', function(){
         this.clearPopup('tutorial');
@@ -194,8 +195,9 @@ function JEViewController() {
   }
 
   this.displayPopup = function(content, category, dismiss_callback) {
-    _gaq.push(['_trackEvent', 'popup/' + category, 'diplayed']);
-
+    if(category){
+      _gaq.push(['_trackEvent', 'popup/' + category, 'diplayed']);
+    }
     message       = this.$popup.querySelector('.message');
     dismissButton = this.$popup.querySelector('.dismiss');
 
@@ -213,8 +215,9 @@ function JEViewController() {
   }
 
   this.clearPopup = function(category) {
-    _gaq.push(['_trackEvent', 'popup/' + category , 'cleared']);
-  
+    if(category){
+      _gaq.push(['_trackEvent', 'popup/' + category , 'cleared']);
+    }
     message       = this.$popup.querySelector('.message');
     
     message.innerHTML = "";

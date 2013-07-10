@@ -62,7 +62,7 @@ localisation['htmlstrings'] = {
       +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a>',
 
     'clip_tip':
-          'Click emoji to copy'
+          'Click on any emoji to copy'
   },
   'jp': {
     'about_page': '',

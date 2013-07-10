@@ -5,6 +5,9 @@ if(chrome.app.getDetails().version != localStorage.currentVersion){
   //This is a place for migrations shall they ever be needed
   //As of 1.1.7 keys:
   // - readTheTutorial # indicates the user have read the tutorial
+  //As of 1.1.9 keys:
+  // - readTheTutorial # indicates the user have read the tutorial
+  // - readTheClipTip  # indicates the user have read the reminder that clicking = copying
 
   // localStorage.clear();
   localStorage.currentVersion = chrome.app.getDetails().version
@@ -56,7 +59,10 @@ localisation['htmlstrings'] = {
       +     '<li> Finally, click on any emoji you like and it will be automatically copied straight into the clipboard </li>'
       +     '<li> Now go anywhere you want the emoji and simply paste</li>'
       +   '</ul>'
-      +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a>'
+      +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a>',
+
+    'clip_tip':
+          'Click emoji to copy'
   },
   'jp': {
     'about_page': '',
@@ -76,6 +82,8 @@ function JEViewController() {
     this.$backButton    = document.querySelector('#topbar .button');
     this.$viewContainer = document.querySelector('#view-container');
     this.$popup         = document.querySelector('#popup');
+    
+    this.CurrentPopupCategory = ""
 
     this.Model = new JEModel();
     this.Model.inilialise( this.awakeFromModelLoad.bind(this) );
@@ -156,9 +164,20 @@ function JEViewController() {
   this.switchToEmoticonTableView = function (categoryName, subcategoryName) {
     _gaq.push(['_trackEvent', categoryName+'/'+subcategoryName, 'viewed']);
     
+    if(localStorage.readTheTutorial == 'true' && localStorage.readTheClipTip != 'true') {
+      this.displayPopup(htmlstrings['clip_tip'], 'clip_tip', function(){
+        this.clearPopup('clip_tip');
+        localStorage.readTheClipTip = true;
+      }.bind(this));
+    }
+
     this.setTitle( this._sym_to_str(subcategoryName) );
     this.setBackButton( function(e){
       this.switchToSubCategoryView(categoryName);
+
+      if(this.CurrentPopupCategory == 'clip_tip') {
+        this.clearPopup();
+      }
     }.bind(this));
     this.clearViewContainer();
     
@@ -195,6 +214,8 @@ function JEViewController() {
   }
 
   this.displayPopup = function(content, category, dismiss_callback) {
+    this.CurrentPopupCategory = category;
+
     if(category){
       _gaq.push(['_trackEvent', 'popup/' + category, 'diplayed']);
     }
@@ -215,6 +236,8 @@ function JEViewController() {
   }
 
   this.clearPopup = function(category) {
+    this.CurrentPopupCategory = "";
+    
     if(category){
       _gaq.push(['_trackEvent', 'popup/' + category , 'cleared']);
     }

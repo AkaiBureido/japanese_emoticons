@@ -1,4 +1,9 @@
-debugmode = true;
+debugmode = false;
+
+// Yes... Lame but can't help it... 気になります！
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-42243080-2']);
+_gaq.push(['_trackPageview']);
 
 // Version tracking has started with 1.1.7
 if(chrome.app.getDetails().version != localStorage.currentVersion){
@@ -13,6 +18,11 @@ if(chrome.app.getDetails().version != localStorage.currentVersion){
   // - readTheClipTip  # indicates the user have read the reminder that clicking = copying
   // - tutorialShown   # indicated how many times tutorial was shown
 
+  if(localStorage.currentVersion){
+    alert("Extension was updated to version: v" + chrome.app.getDetails().version
+          + "\nA lot of new emoticons has been added.");
+    _gaq.push(['_trackEvent', 'user['+ localStorage.currentVersion + ']['+ chrome.app.getDetails().version +']', 'updated']);
+  }
   // localStorage.clear();
   localStorage.currentVersion = chrome.app.getDetails().version
 }
@@ -75,7 +85,7 @@ localisation['htmlstrings'] = {
           'Click on any kaomoji to copy',
 
     'paste_tip':
-          'Now press CTRL-V to paste'
+          'Now press CTRL/CMD-V to paste'
   },
   'jp': {
     'about_page': '',
@@ -671,10 +681,6 @@ function JEModel() {
 }
 
 // Yes... Lame but can't help it... 気になります！
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-42243080-2']);
-_gaq.push(['_trackPageview']);
-
 (function() {
   if(!debugmode) {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

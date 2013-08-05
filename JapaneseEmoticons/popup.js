@@ -1,4 +1,4 @@
-debugmode = false;
+debugmode = true;
 
 // Yes... Lame but can't help it... 気になります！
 var _gaq = _gaq || [];

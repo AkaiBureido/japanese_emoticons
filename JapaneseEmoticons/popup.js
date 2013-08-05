@@ -8,9 +8,18 @@ if(chrome.app.getDetails().version != localStorage.currentVersion){
   //As of 1.1.9 keys:
   // - readTheTutorial # indicates the user have read the tutorial
   // - readTheClipTip  # indicates the user have read the reminder that clicking = copying
+  //As of 1.2 keys:
+  // - readTheTutorial # indicates the user have read the tutorial
+  // - readTheClipTip  # indicates the user have read the reminder that clicking = copying
+  // - tutorialShown   # indicated how many times tutorial was shown
 
   // localStorage.clear();
   localStorage.currentVersion = chrome.app.getDetails().version
+}
+
+if(!localStorage.tutorialShown){
+  localStorage.tutorialShown = 0;
+  console.log("reset tutorialShown")
 }
 
 //TODO: Break up about view into settings view and about view.
@@ -38,13 +47,13 @@ localisation['htmlstrings'] = {
       +    'This extension puts the whole collection of JapaneseEmoticons.net under your fingertips.'
       +  '</p>'
       +  '<p>'
-      +    'To use it &mdash; simply go through the categories, click on the emoji you want and it will be copied to your clipboard. </br>'
+      +    'To use it &mdash; simply go through the categories, click on the kaomoji you want and it will be copied to your clipboard. </br>'
       +    '</br>'
       +    'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a>'
       +  '</p>'
       +  '<hr/>'
       +  '<footer>'
-      +    '<h5>With kind kudos to <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> for its amazing selection of Japanese emoticons.</h5>'
+      +    '<h5>With kind kudos to both <a target="_blank" href="http://www.japaneseemoticons.net">JapaneseEmoticons.net</a> and <a target="_blank" href="http://www.jamieism.com/">Jamieism.com</a> for their amazing selection of Japanese emoticons.</h5>'
       +    '<h4>by <a target="_blank" href="https://github.com/AkaiBureido">Akaibureido</a></h4>'
       +    '<p>version: ' + localStorage.currentVersion + '<p>'
       +  '</footer>',
@@ -56,13 +65,17 @@ localisation['htmlstrings'] = {
       +   '<ul>'
       +     '<li> Click on the <strong>Positive Feelings</strong> category </li>'
       +     '<li> Then click on <strong>Happy or Joyfull</strong> </li>'
-      +     '<li> Finally, click on any emoji you like and it will be automatically copied straight into the clipboard </li>'
-      +     '<li> Now go anywhere you want the emoji and simply paste</li>'
+      +     '<li> Finally, <strong>click on any kaomoji</strong> you like and it will be automatically copied straight into the clipboard </li>'
+      +     '<li> Now go anywhere you want the kaomoji and <strong>simply paste</strong></li>'
       +   '</ul>'
-      +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a>',
+      +   'If you want, you can find more info on my blog: <a target="_blank" href="http://nonlogicaldev.tumblr.com/">NonLogicalDev</a><a href="#"></a></br></br>'
+      +   '<div style=\'text-align: center; font-size: 0.6em\' >You can close this popup with an \'X\' button on top.</div>',
 
     'clip_tip':
-          'Click on any emoji to copy'
+          'Click on any kaomoji to copy',
+
+    'paste_tip':
+          'Now press CTRL-V to paste'
   },
   'jp': {
     'about_page': '',
@@ -99,7 +112,15 @@ function JEViewController() {
     this.clearPopup();
 
     if(localStorage.readTheTutorial != 'true') {
+      localStorage.tutorialShown = parseInt(localStorage.tutorialShown) + 1;
+
+      if(parseInt(localStorage.tutorialShown) >= 5) {
+        localStorage.readTheTutorial = true;
+         _gaq.push(['_trackEvent', 'popup/tutorial' , 'force_close']);
+      }
+
       this.displayPopup(htmlstrings['tutorial_popup'], 'tutorial', function(){
+       
         this.clearPopup('tutorial');
         localStorage.readTheTutorial = true;
       }.bind(this));
@@ -187,6 +208,7 @@ function JEViewController() {
     this.TableView.render(emoticons, this, function(smiley, e) {
       console.log(smiley);
       this.copyToClipboard(smiley);
+      this.$popup.querySelector(".message").innerHTML = htmlstrings['paste_tip'];
       _gaq.push(['_trackEvent', this.$viewTitle.textContent.replace(':','').replace(/ /g, '_').toLowerCase() + '/' + smiley, 'copied']);
     });
   }
@@ -342,6 +364,9 @@ function JETableView(parent) {
         // <td colspan=#{rows[i].colspan} > rows[i].text </td>
         cell = document.createElement('td');
         cell.setAttribute('colspan', rows[i][j].colspan);
+        if(rows[i][j].em_size){
+          cell.setAttribute('style', 'font-size: '+ rows[i][j].em_size + 'em');
+        }
         cell.innerHTML = rows[i][j].text;
 
         if(callback) {
@@ -518,6 +543,14 @@ function JETableView(parent) {
       }
     }
 
+
+    while(groups[4].length != 0) {
+      smiley = groups[4].pop()
+      rows.push([
+          {'text': smiley['smiley'], 'colspan': 4, 'em_size': smiley['size']}
+      ]);
+    }
+
     // For extra eye candy rotate each array by curRow
     for (var i=0; i < rows.length; i++) {
       rows[i].rotate(i);
@@ -530,6 +563,8 @@ function JETableView(parent) {
     faketable = this._defaultTemplate();
     row = document.createElement('tr');
     cell = document.createElement('td');
+    cell.setAttribute('style', 'font-size: 1em');
+
     row.appendChild(document.createElement('td'));
     row.appendChild(document.createElement('td'));
     row.appendChild(document.createElement('td'));
@@ -545,6 +580,7 @@ function JETableView(parent) {
     groups[1] = [] // - emoticons that fit in two cells
     groups[2] = [] // - emoticons that fit in three cells
     groups[3] = [] // - emoticons that fit in four cells
+    groups[4] = [] // - emoticons that does not fit at all X_X
     
     for(var i=0; i < hash.length; i++) {
       metrics = this._calculateTextWidth(hash[i], cell);
@@ -556,17 +592,34 @@ function JETableView(parent) {
         groups[2].push(hash[i]);
       } else if(metrics[1] < (cellWidth*4 - 5)) {
         groups[3].push(hash[i]);
+      } else {
+        em_size = 0.9;
+        for(; em_size > 0.5; em_size-=0.05){
+          metrics = this._calculateTextWidth(hash[i],cell,em_size)
+          if(metrics[1] < (cellWidth*4 - 5)){
+            break;
+          }
+        }
+        groups[4].push(
+            {'smiley': hash[i],'size': em_size}
+        );
       }
     }
+
+    console.log(groups);
 
     parent.removeChild(faketable);
     return groups;
   }
 
-  this._calculateTextWidth = function(string, parent) {
-    var container = document.createElement('span')
-    container.setAttribute('style', 'position: absolute; visibility: hidden; height: auto; width: auto;')
+  this._calculateTextWidth = function(string, parent, em_size) {
+    var container = document.createElement('span');
 
+    if(em_size){
+      container.setAttribute('style', 'position: absolute; visibility: hidden; height: auto; width: auto; font-size:' + em_size +'em')
+    } else{
+      container.setAttribute('style', 'position: absolute; visibility: hidden; height: auto; width: auto;')
+    }
     parent.appendChild(container)
 
     var text = document.createTextNode(string)
@@ -577,7 +630,6 @@ function JETableView(parent) {
       (container.clientWidth + 1)
     ]
 
-    parent.removeChild(container)
 
     return metrics
   }

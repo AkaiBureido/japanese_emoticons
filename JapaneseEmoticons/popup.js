@@ -102,7 +102,8 @@ function JEViewController() {
   // viewTitle, backButton, viewContainer, model
   this.awakeFromLoad = function() {
     this.$viewTitle     = document.querySelector('#topbar .view-title');
-    this.$backButton    = document.querySelector('#topbar .button');
+    this.$backButton    = document.querySelector('#topbar #nav_button');
+    this.$detachButton  = document.querySelector('#topbar #detach_button');
     this.$viewContainer = document.querySelector('#view-container');
     this.$popup         = document.querySelector('#popup');
     
@@ -118,7 +119,15 @@ function JEViewController() {
 
   this.awakeFromModelLoad = function() {
     console.log("model ready");
-  
+ 
+    //Setting up detach button:
+    
+    this.$detachButton.addEventListener('click', function(){
+      // if(localStorage.lastView != 'panel') {
+        chrome.windows.create({ url: 'popup.html', type: 'panel', width:325, height:450 });
+      // }
+    });
+
     this.clearPopup();
 
     if(localStorage.readTheTutorial != 'true') {

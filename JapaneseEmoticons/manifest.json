@@ -1,6 +1,6 @@
 {
   "browser_action": {
-    "default_icon": "resources/icon.png",
+    "default_icon": "resources/assets/icon.png",
     "default_popup": "popup.html"
   },
   "manifest_version": 2,
@@ -9,8 +9,8 @@
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "name": "JapaneseEmoticons",
   "icons": {
-    "48": "resources/appicon48.png",
-    "128": "resources/appicon128.png",
-    "16": "resources/appicon16.png"
+    "48": "resources/assets/appicon48.png",
+    "128": "resources/assets/appicon128.png",
+    "16": "resources/assets/appicon16.png"
   }
 }

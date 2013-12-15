@@ -1,21 +1,19 @@
-PROJECT_FOLDER = JapaneseEmoticons
+PROJECT_DIR = JapaneseEmoticons
 
-coffee_COMPILER = coffee --compile
-sass_COMPILER = sass --update --trace -q
-scss_COMPILER = $(sass_COMPILER) --scss
-
-copy:
-	cp -r ./$(PROJECT_FOLDER) ./cooked/
-
-coffee scss sass:
-	$(eval files := $(shell find ./cooked/$(PROJECT_FOLDER) -iname *.$@ | tr \\n "\ \n"))
-	@if [ "$(files)" != "" ]; then \
-		echo ">>>>>> Compiling $@"; \
-		$($@_COMPILER) $(files) && rm $(files); \
-	fi
-
+.PHONY: clean
 clean:
-	rm -r ./cooked/$(PROJECT_FOLDER)
+	-rm -rf ./cooked/$(PROJECT_DIR)
 
-build: copy coffee sass scss
-	@echo Done!
+.PHONY: copy
+copy:
+	cp -r ./$(PROJECT_DIR) ./cooked/
+
+.PHONY: build
+build:
+	make -C ./cooked/$(PROJECT_DIR) build
+
+.PHONY: filelist
+filelist:
+	make -C ./cooked/$(PROJECT_DIR) filelist
+
+

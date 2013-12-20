@@ -2,6 +2,11 @@
 
 [chrome extension]
 
+- - - - - -
+**WARNING** You are on a developer branch, it might be incomplete and riddled with bugs.
+At the time of writing the version 2.0 is completely **empty**, as I am planning to rewrite the code-base.
+- - - - - -
+
 Extension that allows for very quick access to an extensive library of Japanese text based emojis.
 
 ### A humongous library of excellent text-bases emojis just a click away.

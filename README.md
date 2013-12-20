@@ -1,5 +1,5 @@
-Japanese Emoticons
-==================
+#Japanese Emoticons
+
 [chrome extension]
 
 Extension that allows for very quick access to an extensive library of Japanese text based emojis.
@@ -23,3 +23,30 @@ Emojis are provided by JapaneseEmoticons.net.
 ![screeenshot](http://i.imgur.com/H9tNI2T.png)
 
 ![screeenshot](http://i.imgur.com/8Gntqx3.png)
+
+## Building instructions
+###Prerequisites
+Make sure you have the following installed:
+```   
+ruby
+bundler
+coffee-script
+```
+Then run the rollowing:
+```shell
+$ bundle install
+```
+
+###Bilding
+To build run
+```shell
+$ rake cook
+```
+To create deployable archive run:
+```shell
+$ rake release
+```
+To clean up run:
+```shell
+$ rake clean
+```

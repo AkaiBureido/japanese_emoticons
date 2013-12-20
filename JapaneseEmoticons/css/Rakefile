@@ -1,0 +1,13 @@
+require 'rake/clean'
+
+SASS_FILES = FileList['*.sass']
+CSS_FILES = SASS_FILES.ext('css')
+CLEAN.include( CSS_FILES )
+
+task :default => [:build]
+task :build => CSS_FILES
+
+rule '.css' => '.sass' do |t|
+  sh "sass --no-cache #{t.source} > #{t.name}"
+end
+

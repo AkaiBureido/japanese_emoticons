@@ -1,0 +1,12 @@
+require 'rake/clean'
+
+COFFEE_FILES = FileList['*.coffee']
+JS_FILES = COFFEE_FILES.ext('js')
+CLEAN.include( JS_FILES )
+
+task :default => [:build]
+task :build => JS_FILES
+
+rule '.js' => '.coffee' do |t|
+  sh "coffee -p #{t.source} > #{t.name}"
+end

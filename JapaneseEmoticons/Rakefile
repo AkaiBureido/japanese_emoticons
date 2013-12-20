@@ -1,0 +1,19 @@
+require 'rake_subdir'
+
+task :default => [:build]
+task :build => [:build_js, :build_css]
+
+desc "Build the Javascripts"
+task :build_js do
+  rake_subdir 'js'
+end
+
+desc "Build the CSS"
+task :build_css do
+  rake_subdir 'css'
+end
+
+desc "Clean generated files"
+task :clean do
+  rake_subdir 'js' => 'clean', 'css' => 'clean'
+end

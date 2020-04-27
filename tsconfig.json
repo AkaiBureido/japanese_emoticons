@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "target": "es5",
+        "module": "es2015",
+        "jsx": "react",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "self//*": ["./src/*"]
+        },
+        "lib": [
+            "dom",
+            "es5",
+            "es6"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "dist/**/*",
+        "node_modules/**/*",
+    ]
+}

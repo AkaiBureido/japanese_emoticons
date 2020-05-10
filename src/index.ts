@@ -1,8 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import App from "self//Layouts/App";
+import * as ReactGA from "react-ga";
+import Root from "self://Layouts/Root";
+
+import "./index.less"
 
 ReactDOM.render(
-    React.createElement(App, null, null),
+    React.createElement(Root, null, null),
     document.getElementById("app")
 )

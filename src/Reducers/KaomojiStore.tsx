@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useReducer} from "react";
 
 export interface KaomojiStorePayload {
     [category: string]: {
@@ -61,7 +62,7 @@ const reducer = (state: KaomojiStoreState, action: KaomokiStoreAction): KaomojiS
 }
 
 export const useLocalKaomojiStore = () => {
-    const [state, dispatch] = React.useReducer(reducer, null, init);
+    const [state, dispatch] = useReducer(reducer, null, init);
 
     let fetchData = () => {
         dispatch({
@@ -88,8 +89,47 @@ export const useLocalKaomojiStore = () => {
 
     return {
         state,
-        fetchData
+        fetchData,
     };
 };
 
-export default useLocalKaomojiStore
+export const getKaomojiListing = (listing: any, path: {category?: string, subcategory?: string}) => {
+    let id: string = null;
+    let name: string = null;
+    let opath = ["list"];
+
+    let data = listing;
+
+    if (path.category) {
+        id = path.category
+        opath = [...opath, path.category]
+        name = categoryToDisplayName(path.category)
+        data = data[path.category]
+    }
+
+    if (path.subcategory) {
+        id = path.subcategory
+        opath = [...opath, path.subcategory]
+        name = categoryToDisplayName(path.subcategory)
+        data = data[path.subcategory]
+    }
+
+    return {
+        id,
+        name,
+        path: "/" + [...opath].join("/"),
+        data: data,
+        content: () => Object.keys(data).map(id => ({
+            id,
+            name: categoryToDisplayName(id),
+            path: "/" + [...opath, id].join("/")
+        }))
+    }
+}
+
+const categoryToDisplayName = (name: string) => {
+    if (!name) return
+    return name.split("_")
+        .map(wrd => wrd[0].toUpperCase() + wrd.substr(1))
+        .join(" ");
+}

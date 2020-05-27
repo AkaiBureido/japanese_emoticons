@@ -1,0 +1,381 @@
+* { box-sizing: border-box; }
+
+/* The emerging W3C standard
+   that is currently Firefox-only */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+}
+
+/* Works on Chrome/Edge/Safari */
+*::-webkit-scrollbar {
+  width: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--color-scrollbar-track);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: 20px;
+}
+
+:root {
+  --color-base-bg00: rgb(230, 230, 230);
+  --color-base-fg00: black;
+
+  --color-base-bg10: black;
+  --color-base-fg10: white;
+
+  --color-menu-bg: rgb(239,239,239);
+  --color-menu-fg: rgba(50, 50, 50, 0.99);
+
+  --color-button-fg: black;
+  --color-widget-button-fg: black;
+  --color-widget-button-bg: rgba(0,0,0,0.15);
+
+  --color-tooltip-fg: white;
+  --color-tooltip-alt-fg: white;
+  --color-tooltip-bg: rgba(0,0,0,0.95);
+
+  --color-border: rgb(179, 179, 179);
+  --color-border-table-shadow: rgba(255, 255, 255, 0.5);
+  --color-border-table: rgb(200, 200, 200);
+
+  --gradient-button-hover: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.15) 100%);
+  --gradient-button-active: linear-gradient(180deg, rgba(57, 155, 239, 1) 0%, rgba(0, 107, 219, 1) 100%);
+  --gradient-button-error: linear-gradient(180deg, rgb(239, 57, 63) 0%, rgb(219, 0, 0) 100%);
+
+  --color-scrollbar-thumb: rgba(0,0,0,0.5);
+  --color-scrollbar-track: rgba(0,0,0,0.2);
+
+  @media(prefers-color-scheme: dark) {
+    --color-base-bg00: rgb(25, 25, 25);
+    --color-base-fg00: white;
+
+    --color-base-bg10: white;
+    --color-base-fg10: black;
+
+    --color-menu-bg: rgb(16,16,16);
+    --color-menu-fg: rgba(205, 205, 205, 0.99);
+
+    --color-button-fg: white;
+    --color-widget-button-fg: white;
+    --color-widget-button-bg: rgba(255,255,255,0.3);
+
+    --color-tooltip-fg: black;
+    --color-tooltip-alt-fg: white;
+    --color-tooltip-bg: rgba(255,255,255,0.95);
+
+    --gradient-button-hover: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.15) 100%);
+
+    --color-border: rgb(76, 76, 76);
+    --color-border-table-shadow: rgba(0, 0, 0, 0.5);
+    --color-border-table: rgb(55, 55, 55);
+
+    --color-scrollbar-thumb: rgba(255,255,255,0.5);
+    --color-scrollbar-track: rgba(255,255,255,0.2);
+  }
+}
+
+#border() {
+  border-collapse: collapse;
+  border-width: 0;
+  border-color: var(--color-border);
+  border-style: solid;
+}
+
+#button() {
+  color: var(--color-button-fg);
+  cursor: pointer;
+  &:hover {
+    background: var(--gradient-button-hover);
+  }
+  &:active {
+    color: white;
+    background: var(--gradient-button-active);
+  }
+}
+
+a {
+  color: royalblue;
+  &:visited {
+    color: mediumpurple;
+  }
+}
+
+
+body {
+  width: 325px;
+  margin: 2px;
+  font-size: 12px;
+  font-family: Helvetica,Arial,sans-serif;
+
+  overflow-x: hidden;
+  overflow-y: hidden;
+  z-index: 0;
+
+  color: var(--color-base-fg00);
+
+  &::before {
+    z-index: -1;
+    content: "";
+
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+
+    @media(prefers-color-scheme: dark)  {
+      filter: invert(100%);
+    }
+
+    background-color: var(--color-base-bg00);
+    background-image: url(/images/squairy_light.png);
+  }
+}
+
+.page-nav {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5em;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  #border();
+  border-bottom-width: 5px;
+
+  z-index: 100;
+
+  color: var(--color-menu-fg);
+  background: var(--color-menu-bg);
+
+  .page-nav-title {
+    margin: 0;
+    font-weight: bold;
+
+    font-size: 1.2em;
+  }
+
+  .page-nav-widget {
+    font-size: 1em;
+    .codicon {
+      display: block;
+      border: none;
+    }
+    .button {
+      // height: 16px;
+      padding: 4px;
+      border-radius: 4px;
+      display: inline-block;
+      text-decoration: none;
+    }
+  }
+}
+
+.page-view {
+  width: 100%;
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2.5px;
+
+}
+
+
+.button {
+  padding: 2px 6px;
+  border-radius: 2px;
+
+  color: var(--color-widget-button-fg);
+  background: var(--color-widget-button-bg);
+
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+
+  &:visited {
+    color: inherit;
+  }
+  &:hover {
+    color: var(--color-base-fg10);
+    background: var(--color-base-bg10);
+  }
+  &:active {
+    color: var(--color-base-fg10);
+    background: var(--gradient-button-active);
+  }
+}
+.view-settings-page {
+  label {
+    padding: 10px;
+    display: block;
+  }
+}
+
+.view-category-list {
+  ul {
+    margin: 0;
+    padding: 0;
+
+    #border();
+    border-width: 2px;
+    border-radius: 5px;
+
+    list-style: none;
+
+    color: var(--color-menu-fg);
+    background: var(--color-menu-bg);
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-grow: 1;
+
+      #border();
+
+      & {
+        border-bottom-width: 1px;
+      }
+
+      &:last-child {
+        border-bottom-width: 0px;
+      }
+
+      &:after {
+        position: relative;
+
+        width: 0;
+        right: 0.6em;
+        margin-right: 4px;
+
+        flex-grow: 0;
+        pointer-events: none;
+
+        content: '>';
+        font-family: Chalkboard, Arial, sans-serif;
+        font-size: 1.5em;
+        color: rgba(0, 0, 0, 0.24);
+      }
+
+      #button();
+
+      a {
+        flex-grow: 1;
+        display: block;
+        padding: 10px;
+
+        text-decoration: none;
+        color: inherit;
+
+        &:active {
+          color: inherit;
+        }
+      }
+    }
+  }
+}
+
+.view-smile-table {
+  width: 315px;
+  font-size: 0.9em;
+  font-family: Helvetica,Arial,sans-serif;
+
+  .subheading {
+    font-size: 1.2em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    #border();
+
+    td {
+      height: 30px;
+      padding: 0;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+
+      box-shadow: inset 1px 1px var(--color-border-table-shadow);
+      border: 1px solid var(--color-border-table);
+
+      text-align: center;
+
+      &:hover {
+        box-shadow: none;
+      }
+      button {
+        &:active {
+          outline-width: 2px;
+        }
+      }
+    }
+  }
+
+  .widget-expanded-button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+    font-size: inherit;
+    font-family: inherit;
+
+    user-select: none;
+    text-decoration: none;
+    background: none;
+
+    #border();
+
+
+    #button();
+  }
+}
+
+.widget-tooltip {
+  padding: 5px;
+  border-radius: 5px;
+
+  color: var(--color-tooltip-fg);
+  background-color: var(--color-tooltip-bg);
+
+  font-weight: bold;
+
+  pointer-events: none;
+
+  transition-duration: 300ms;
+  transition-property: opacity;
+  &.widget-tooltip-closed {
+    opacity: 0;
+  }
+  &.widget-tooltip-open {
+    opacity: 1;
+  }
+  &[data-popper-reference-hidden], &[data-popper-escaped] {
+    visibility: hidden;
+  }
+  &.widget-tooltip-success {
+    color: var(--color-tooltip-alt-fg);
+    background: var(--gradient-button-active);
+  }
+  &.widget-tooltip-error {
+    color: var(--color-tooltip-alt-fg);
+    background: var(--gradient-button-error);
+  }
+}
+
+.view-about-page {
+  min-height: 300px;
+  padding-top: 200px;
+  background-image: url(/images/aboutbanner_old.png);
+  background-repeat: no-repeat;
+  text-align: center;
+  p {
+    margin: 0;
+  }
+  padding-bottom: 10px;
+}

@@ -1,3 +1,5 @@
+import {Metrics} from "self://Utils/Metrics";
+
 export function copyToClipboard(text: string) {
     const isRTL = document.documentElement.getAttribute('dir') == 'rtl';
 
@@ -31,7 +33,20 @@ export function copyToClipboard(text: string) {
 
     if (ok) {
         window.getSelection().removeAllRanges();
+    } else {
+        Metrics.event({category: "error", action: "clipboard-error"})
     }
+
+    // navigator.permissions.query({name: "clipboard-write" as any}).then(result => {
+    //     if (result.state == "granted" || result.state == "prompt") {
+    //         /* write to the clipboard now */
+    //         Metrics.event({category: "user", action: "clipboard-write-allowed"})
+    //     } else {
+    //         Metrics.event({category: "user", action: "clipboard-write-denied"})
+    //     }
+    // }).catch((e)=> {
+    //       Metrics.event({category: "user", action: `clipboard-error ${e.message}`})
+    // });
 
     return ok
 }

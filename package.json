@@ -1,11 +1,12 @@
 {
   "name": "@self/parcel-test",
   "scripts": {
-    "ext": "cd dist && web-ext run",
-    "ext-build": "cd dist && web-ext build",
-    "dev": "webpack-dev-server --open",
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "build": "pnpm run build:js && pnpm run build:ext",
+    "build:js": "rm -rf dist && webpack",
+    "build:ext": "web-ext --source-dir dist build --artifacts-dir build/",
+    "run:ext": "web-ext --source-dir dist run",
+    "run:dev": "webpack-dev-server --mode development --open",
+    "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

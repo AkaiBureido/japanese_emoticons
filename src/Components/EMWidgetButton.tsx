@@ -1,10 +1,12 @@
 import * as React from "react";
-import {Link} from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
 
-export const EMWidgetButton = (props: { name: string, path?: string }) => {
+export const EMWidgetButton = (props: { name: any, path?: string }) => {
+    let history = useHistory();
+
     const {name, path} = props;
     if (path) {
-        return <Link to={path}>{name}</Link>
+        return <a href="#" onClick={()=>history.push(path)}>{name}</a>
     } else {
         return <>{name}</>
     }

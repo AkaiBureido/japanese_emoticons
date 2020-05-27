@@ -1,63 +1,9 @@
 import * as React from 'react'
 
-import {
-  EventHandler,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { EventHandler, useCallback, useContext, } from 'react'
 
-interface EMSettings {
-  disableTooltipHints?: boolean
-}
+import { EMSettingsContext } from 'self://Components/EMSettings';
 
-type EMSettingsDispatch = (cb: (EMSettings) => EMSettings) => void
-type EMSettingsContextType = { settings: EMSettings; setSettings: EMSettingsDispatch }
-
-const EMSettingsContext = React.createContext<EMSettingsContextType>(null)
-
-export const useSettings = (): EMSettings => {
-  let settings = useContext(EMSettingsContext).settings
-  return settings ? settings : defaultSettings()
-}
-
-export const EMSettingsProvider = (props: { children: any }) => {
-  let [settings, setSettings] = useState<EMSettings>(() => {
-    let initialValue: EMSettings = null
-    try {
-      initialValue = JSON.parse(window.localStorage.getItem('settings'))
-    } catch {}
-    return initialValue ? initialValue : defaultSettings()
-  })
-
-  useEffect(() => {
-    window.localStorage.setItem('settings', JSON.stringify(settings))
-  }, [settings])
-
-  let set = useCallback(
-    (cb: (EMSettings) => EMSettings) => {
-      setSettings((s) => {
-        return cb(s)
-      })
-    },
-    [setSettings],
-  )
-
-  let value = useMemo<EMSettingsContextType>(() => {
-    return {
-      settings: settings,
-      setSettings: set,
-    }
-  }, [settings, set])
-
-  return (
-    <EMSettingsContext.Provider value={value}>
-      {props.children}
-    </EMSettingsContext.Provider>
-  )
-}
 
 export const EMSettingsView = () => {
   let { settings, setSettings } = useContext(EMSettingsContext)
@@ -71,14 +17,19 @@ export const EMSettingsView = () => {
           return { ...settings, disableTooltipHints: target.checked }
         })
       }
+
+      if (target.name === 'enableOldStyle') {
+        setSettings((settings) => {
+          return { ...settings, oldStyle: target.checked }
+        })
+      }
     },
     [setSettings],
   )
 
   return (
     <section className={'view-settings-page'}>
-      <hr/>
-      <label>
+      <label title={"This disables the tooltip hints appearing on mouse hover in the Kaomoji table"}>
         <input
           type='checkbox'
           name='disableTooltipHints'
@@ -87,11 +38,15 @@ export const EMSettingsView = () => {
         />
         Disable Hover Tooltips
       </label>
-      <hr/>
+      <label title={"This enables old CSS Styles"}>
+        <input
+          type='checkbox'
+          name='enableOldStyle'
+          checked={settings.oldStyle}
+          onChange={changeCB}
+        />
+        Enable Old Style
+      </label>
     </section>
   )
 }
-
-const defaultSettings = (): EMSettings => ({
-  disableTooltipHints: true,
-})

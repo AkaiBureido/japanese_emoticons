@@ -7,8 +7,8 @@ export const EMViewPage = (props: {
 }) => {
     return <>
         <nav className="page-nav">
-            <h1 className="page-title">{props.title}</h1>
-            <div className="page-widget">{props.widget}</div>
+            <h1 className="page-nav-title">{props.title}</h1>
+            <div className="page-nav-widget">{props.widget}</div>
         </nav>
         <main className="page-view">
             {props.children}

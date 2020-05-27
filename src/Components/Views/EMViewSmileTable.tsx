@@ -17,7 +17,7 @@ import {
 } from 'self://Utils/TableLayout'
 import { copyToClipboard } from 'self://Utils/Clipboard'
 import { useTooltip } from 'self://Utils/Tooltip'
-import { useSettings } from 'self://Components/Views/EMViewSettings'
+import { useSettings } from 'self://Components/EMSettings'
 import { Metrics } from 'self://Utils/Metrics'
 
 const useSmileGroups = (
@@ -33,16 +33,22 @@ const useSmileGroups = (
     }
 
     let time0 = performance.now()
-    let gs = constructTableGroups(calcEl(), smileList, 5)
+    let gs = constructTableGroups(calcEl(), smileList, 4)
     let time1 = performance.now()
     let tg = tableGroupsToTableRows([...gs])
     let time2 = performance.now()
 
     Metrics.timing({
-      category: "table-group", variable: "constructTableGroups", value: time1-time0,
+      category: "table-group",
+      variable: "constructTableGroups",
+      label: hash,
+      value: time1 - time0,
     })
     Metrics.timing({
-      category: "table-group", variable: "tableGroupsToTableRows", value: time2-time1,
+      category: "table-group",
+      variable: "tableGroupsToTableRows",
+      label: hash,
+      value: time2 - time1,
     })
 
     setGroups(tg)
@@ -56,7 +62,7 @@ export const EMViewSmileTable = (props: { hash: string; content: { list: any[] }
   let elCalcDiv = useRef(null)
   let groups = useSmileGroups(props.hash, props.content.list, () => elCalcDiv.current)
 
-  let tooltip = useTooltip('tooltip')
+  let tooltip = useTooltip('widget-tooltip')
   let [tooltipContent, setTooltipContent] = useState(null)
   let [tooltipTimeout, setTooltipTimeout] = useState(null)
   let settings = useSettings()
@@ -74,10 +80,12 @@ export const EMViewSmileTable = (props: { hash: string; content: { list: any[] }
           action: 'copy',
         })
         tooltip.showTooltip(target, 500, 'success', () => {
-          setTooltipContent('Copied')
+          setTooltipContent(<>Copied</>)
         })
       } else {
-        tooltip.showTooltip(target, 500, 'error')
+        tooltip.showTooltip(target, 3000, 'error', () => {
+          setTooltipContent(<>Error Copying to Clipboard</>)
+        })
       }
     },
     [tooltip, tooltipTimeout],
@@ -96,8 +104,8 @@ export const EMViewSmileTable = (props: { hash: string; content: { list: any[] }
         if (eventType == 'mouseenter') {
           setTooltipTimeout(
             setTimeout(() => {
-              tooltip.showTooltip(target, 4000, null, () => {
-                setTooltipContent('Click to copy')
+              tooltip.showTooltip(target, 3000, null, () => {
+                setTooltipContent(<>Click to copy</>)
               })
             }, 1000),
           )
@@ -123,7 +131,7 @@ export const EMViewSmileTable = (props: { hash: string; content: { list: any[] }
 
   return (
     <section className='view-smile-table'>
-      <div key='tooltip' ref={tooltip.setTooltip} {...tooltip.attributes}>
+      <div ref={tooltip.setTooltip} {...tooltip.attributes}>
         {tooltipContent}
       </div>
       <EMWidgetKaomojiTable
@@ -131,7 +139,7 @@ export const EMViewSmileTable = (props: { hash: string; content: { list: any[] }
         onClick={handleButtonClick}
         onHover={handleButtonHover}
       />
-      <div key='calc' ref={elCalcDiv} />
+      <div className='view-smile-table-calc' ref={elCalcDiv} />
     </section>
   )
 }
@@ -142,7 +150,7 @@ const EMWidgetKaomojiTable = (props: {
   onHover: MouseEventHandler
 }) => {
   return (
-    <table>
+    <table className="widget-smile-table">
       <tbody>
         {props.groups.map((row, rowIdx) => (
           <tr key={rowIdx}>
@@ -155,7 +163,7 @@ const EMWidgetKaomojiTable = (props: {
                 }}
               >
                 <button
-                  className='smile-button'
+                  className='widget-expanded-button'
                   onClick={props.onClick}
                   onMouseEnter={props.onHover}
                   onMouseLeave={props.onHover}

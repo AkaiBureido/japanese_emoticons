@@ -12,6 +12,8 @@ export function constructTableGroups(
   let [cellParent, cell] = createVariableWidthTextSpan()
   parent.appendChild(cellParent)
   let columnWidth = cellParent.clientWidth / 4
+  console.log("#Container.cell", cell.clientWidth)
+  console.log("#Container.parent", cellParent.clientWidth)
 
   // Breaking up into 4 groups
   let groups: ComputedSpanItem[][] = []
@@ -209,7 +211,7 @@ export function tableGroupsToTableRows(groups: ComputedSpanItem[][]): TableRowGr
 
   // For extra eye candy rotate each array by curRow
   for (let i = 0; i < rows.length; i++) {
-    rows = _rotateList(rows, i)
+    rows[i] = _rotateList(rows[i], i)
   }
 
   return rows
@@ -245,8 +247,13 @@ function calculateTextWidth(string: string, parent: HTMLElement, em_size: number
   let container = document.createElement('span')
 
   container.setAttribute(
-    'style',
-    'position: absolute; height: auto; width: auto; font-size:' + em_size + 'em',
+    'style', [
+      'position: absolute',
+      'height: auto',
+      'width: auto',
+      `font-size: ${em_size}em`,
+      'white-space: nowrap',
+    ].join(';')
   )
   parent.appendChild(container)
 
@@ -259,18 +266,19 @@ function calculateTextWidth(string: string, parent: HTMLElement, em_size: number
   }
 
   container.removeChild(text)
+  console.log(`#smiley.${string}`, metrics.width)
   return metrics
 }
 
 function createVariableWidthTextSpan() {
   let template = document.createElement('div')
-  template.setAttribute('style', ['width: 100%'].join(';'))
+  template.setAttribute('style', ['width: 100%', 'display: table'].join(';'))
   let cell = document.createElement('span')
-  cell.setAttribute('style', ['display: inline-block'].join(';'))
+  cell.setAttribute('style', ['display: inline-block', 'display: table-cell'].join(';'))
   template.appendChild(cell)
   return [template, cell]
 }
 
 function _rotateList<T>(l: T[], i: number): T[] {
-  return l.slice(i, l.length).concat(l.slice(0, i))
+  return l.slice(i % l.length, l.length).concat(l.slice(0, i % l.length))
 }

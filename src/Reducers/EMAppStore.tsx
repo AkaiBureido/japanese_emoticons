@@ -1,7 +1,6 @@
-import * as React from "react";
 import {useReducer} from "react";
 
-export interface KaomojiStorePayload {
+export interface EMAppStorePayload {
     [category: string]: {
         [subCategory: string]: {
             url:  string,
@@ -9,19 +8,19 @@ export interface KaomojiStorePayload {
         }[],
     },
 }
-export interface KaomojiStoreState {
+export interface EMAppStore {
     loading: boolean;
     initialized: boolean;
-    payload?: KaomojiStorePayload;
+    payload?: EMAppStorePayload;
     error?: any;
 }
 
-export interface KaomokiStoreAction {
+export interface EMAppStoreAction {
     type: "init" | "load-pending" | "load-done" | "load-error";
     payload?: any;
 }
 
-const init = (): KaomojiStoreState => {
+const init = (): EMAppStore => {
     return {
         loading: false,
         initialized: false,
@@ -30,7 +29,7 @@ const init = (): KaomojiStoreState => {
     }
 }
 
-const reducer = (state: KaomojiStoreState, action: KaomokiStoreAction): KaomojiStoreState => {
+const reducer = (state: EMAppStore, action: EMAppStoreAction): EMAppStore => {
     switch (action.type) {
         case 'init':
             return this.init();
@@ -61,7 +60,7 @@ const reducer = (state: KaomojiStoreState, action: KaomokiStoreAction): KaomojiS
     }
 }
 
-export const useLocalKaomojiStore = () => {
+export const useAppStore = () => {
     const [state, dispatch] = useReducer(reducer, null, init);
 
     let fetchData = () => {

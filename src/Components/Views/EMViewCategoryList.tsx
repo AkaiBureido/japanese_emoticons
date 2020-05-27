@@ -13,7 +13,7 @@ export const EMViewCategoryList = (props: { categories: EMCategory[] }) => {
 
   return (
     <section className='view-category-list'>
-      <ul>
+      <ul className="widget-nav-list">
         {props.categories.map(({ id, name, path }) => (
           <li key={id}>
             <EMWidgetButton name={name} path={path} />

@@ -1,20 +1,20 @@
 import * as React from 'react'
+import { ReactElement } from 'react'
 
 import {
   useParams as useRouterParams,
   useHistory as useBrowserHistory,
 } from 'react-router-dom'
-import { getKaomojiListing, KaomojiStorePayload } from 'self://Reducers/KaomojiStore'
-import { EMViewPage, EMViewSmileTable, EMViewCategoryList } from 'self://Components/Views'
-import { ReactElement } from 'react'
+
+import { getKaomojiListing, EMAppStorePayload } from 'self://Reducers/EMAppStore'
+import { EMViewPage, EMViewSmileTable, EMSettingsView, EMViewCategoryList } from 'self://Components/Views'
 import { EMAboutView } from 'self://Components/Views/EMViewAbout'
-import { EMSettingsView } from 'self://Components/Views/EMViewSettings'
 
 export type EMAppKind = 'category' | 'table' | 'about' | 'settings'
 
 export const EMApp = (props: {
   kind: EMAppKind
-  kaomojiListing: KaomojiStorePayload
+  appState: EMAppStorePayload
 }) => {
   let browser = {
     route: useRouterParams() as any,
@@ -24,31 +24,51 @@ export const EMApp = (props: {
   let page: {
     title: string
     widgets?: {
-      action: Function
-      content: string
+      action: Function,
+      hint: string,
+      content: any,
     }[]
     body?: ReactElement
   } = { title: '', body: null }
 
   let widgetBackButton = {
     content: 'Back',
+    hint: 'Go to the previous page',
     action: () => browser.history.goBack(),
   }
   let widgetAbout = {
-    content: '?',
+    content: <i className="codicon codicon-question"/>,
+    hint: 'About this extension',
     action: () => browser.history.push('/about'),
   }
   let widgetSettings = {
-    content: '#',
+    content: <i className="codicon codicon-gear"/>,
+    hint: 'Extension settings',
     action: () => browser.history.push('/settings'),
+  }
+  let widgetDetach = {
+    content: <i className="codicon codicon-multiple-windows"/>,
+    hint: 'Detach the extension',
+    action: () =>
+      chrome.windows.create({
+        url: 'index.html',
+        type: 'popup',
+        width: 330,
+        height: 550,
+      }, function (w) {
+        w.openner = "popup"
+      }),
   }
 
   page.widgets = [widgetBackButton]
   if (browser.history.location.pathname === '/list') {
     page.widgets = [widgetAbout, widgetSettings]
+    if (typeof chrome !== "undefined") {
+      page.widgets.push(widgetDetach)
+    }
   }
 
-  if (!props.kaomojiListing) {
+  if (!props.appState) {
     page.title = 'Loading...'
   } else if (props.kind === 'about') {
     page.title = 'About'
@@ -57,7 +77,7 @@ export const EMApp = (props: {
     page.title = 'Settings'
     page.body = <EMSettingsView />
   } else if (props.kind === 'category') {
-    let listing = getKaomojiListing(props.kaomojiListing, browser.route)
+    let listing = getKaomojiListing(props.appState, browser.route)
     if (listing.name) {
       page.title = listing.name + ':'
     } else {
@@ -65,7 +85,7 @@ export const EMApp = (props: {
     }
     page.body = <EMViewCategoryList categories={listing.content()} />
   } else if (props.kind === 'table') {
-    let listing = getKaomojiListing(props.kaomojiListing, browser.route)
+    let listing = getKaomojiListing(props.appState, browser.route)
     page.title = listing.name + ':'
     page.body = <EMViewSmileTable hash={listing.path} content={listing.data} />
   }
@@ -77,14 +97,14 @@ export const EMApp = (props: {
   )
 }
 
-const widgetButton = (o?: { action: Function; content: any }[]) => {
+const widgetButton = (o?: { action: Function; hint: string; content: any }[]) => {
   if (!o) return
   return (
     <>
-      {o.map(({ action, content }, idx) => (
-        <React.Fragment key={content}>
+      {o.map(({ action, hint, content }, idx) => (
+        <React.Fragment key={hint}>
           {idx > 0 ? ' ' : null}
-          <a className='button' href='#' onClick={() => action()}>
+          <a title={hint} className='button' href='#' onClick={() => action()}>
             {content}
           </a>
         </React.Fragment>

@@ -11,14 +11,22 @@ copied to your clipboard.
 
 <section>
 
-With kind kudos to both [JapaneseEmoticons.net](http://www.japaneseemoticons.net) and
+With kind kudos to [JapaneseEmoticons.net](http://www.japaneseemoticons.me) and
 [Jamieism.com](http://www.jamieism.com/) for their amazing selection of Japanese Kaomojis.
+
+<br/>
+
+Also thanks to [Microsoft Codicons](https://github.com/microsoft/vscode-codicons) for high quality
+interface icons used in this extension.
 
 </section>
 
+- - - - - - - - -
+
 <footer>
 
-by [NonLogicalDev](https://github.com/NonLogicalDev) <br /> 
-version: 1.2
+by [NonLogicalDev](https://github.com/NonLogicalDev)
+
+<p>version: <>{props.version}</></p>
 
 </footer>

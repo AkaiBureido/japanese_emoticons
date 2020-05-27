@@ -1,3 +1,4 @@
-export { EMViewPage } from 'self://Components/Views/EMViewPage'
-export { EMViewSmileTable } from 'self://Components/Views/EMViewSmileTable'
-export { EMViewCategoryList } from 'self://Components/Views/EMViewCategoryList'
+export { EMViewPage } from './EMViewPage'
+export { EMViewSmileTable } from './EMViewSmileTable'
+export { EMViewCategoryList } from './EMViewCategoryList'
+export { EMSettingsView } from './EMViewSettings';

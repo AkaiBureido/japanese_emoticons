@@ -3,19 +3,19 @@ html {
 }
 
 * {
-  --color-scrollbar-thumb: rgba(0,0,0,0.5);
-  --color-scrollbar-track: rgba(0,0,0,0.2);
+  --color-scrollbar-thumb: rgba(0, 0, 0, 0.5);
+  --color-scrollbar-track: rgba(0, 0, 0, 0.2);
 
-  &, &:before, &:after {
+  &,
+  &:before,
+  &:after {
     box-sizing: inherit;
   }
 
   /* The emerging W3C standard
     that is currently Firefox-only */
   scrollbar-width: thin;
-  scrollbar-color:
-    var(--color-scrollbar-thumb)
-    var(--color-scrollbar-track);
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
 
   /* Works on Chrome/Edge/Safari */
   &::-webkit-scrollbar {
@@ -34,7 +34,6 @@ html {
   border: none;
 }
 
-
 //==============================================================================
 
 #border() {
@@ -49,9 +48,10 @@ html {
 //==============================================================================
 //==============================================================================
 
-html, body {
+html,
+body {
   font-size: 12px;
-  font-family: Helvetica,Arial,sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 
   width: 325px;
   height: 100%;
@@ -68,7 +68,7 @@ hr {
   margin: 0.5em 0;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin: 3px;
 }
 
@@ -100,6 +100,8 @@ input[type="checkbox"] {
   }
 
   .page-nav-widget {
+    font-size: 1em;
+
     .codicon {
       display: block;
       border: none;
@@ -112,10 +114,11 @@ input[type="checkbox"] {
       border-radius: 4px;
       display: inline-block;
       text-decoration: none;
+
+      vertical-align: middle;
     }
   }
 }
-
 
 //==============================================================================
 
@@ -142,7 +145,7 @@ input[type="checkbox"] {
 }
 
 .view-settings-page {
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     margin-right: 1em;
   }
   label {
@@ -196,11 +199,11 @@ input[type="checkbox"] {
     list-style-type: none;
 
     a {
-        display: block;
-        padding: 10px;
+      display: block;
+      padding: 10px;
 
-        color: inherit;
-        text-decoration: none;
+      color: inherit;
+      text-decoration: none;
     }
   }
 }
@@ -266,12 +269,11 @@ input[type="checkbox"] {
 }
 
 .widget-tooltip-open {
-    opacity: 1;
+  opacity: 1;
 }
 
 .widget-tooltip-closed {
-    opacity: 0;
-
+  opacity: 0;
 }
 
 //==============================================================================
@@ -296,7 +298,7 @@ input[type="checkbox"] {
   --c-tooltip-bg: rgb(80, 95, 121);
   --c-tooltip-fg: rgb(244, 245, 247);
 
-  --c-border: rgb(223, 225, 230);;
+  --c-border: rgb(223, 225, 230);
   --c-focus: rgb(76, 154, 255);
 }
 
@@ -365,4 +367,3 @@ body {
   background-color: var(--c-bblue-bg);
   color: var(--c-white-bg);
 }
-

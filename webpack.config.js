@@ -1,7 +1,8 @@
 const path = require('path')
+const webpack = require('webpack')
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const webpack = require('webpack')
 
 const distPath = path.resolve(__dirname, 'dist')
 
@@ -9,9 +10,11 @@ const distPath = path.resolve(__dirname, 'dist')
 // Here you write different options and tell Webpack what to do
 module.exports = (env, argv) => {
   const isDebug = argv.mode === "development"
-  const enableAnalytics = true
+  const enableAnalytics = false
 
   let config = {
+    mode: 'production',
+
     // Path to your entry point. From this file Webpack will begin his work
     entry: './src/index.ts',
 
@@ -25,7 +28,7 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js', '.md'],
       alias: {
-        'self:/': path.resolve(__dirname, 'src/'),
+        'JEM': path.resolve(__dirname, 'src/'),
         'asset:/': path.resolve(__dirname, 'src_assets/'),
       },
     },
@@ -86,23 +89,23 @@ module.exports = (env, argv) => {
       }),
       new CopyPlugin([
         {
-          from: 'src_assets/icons',
+          from: 'assets/icons',
           to: path.resolve(distPath, 'icons'),
         },
         {
-          from: 'src_assets/data',
+          from: 'assets/data',
           to: path.resolve(distPath, 'data'),
         },
         {
-          from: 'src_assets/fonts',
+          from: 'assets/fonts',
           to: path.resolve(distPath, 'fonts'),
         },
         {
-          from: 'src_assets/images',
+          from: 'assets/images',
           to: path.resolve(distPath, 'images'),
         },
         {
-          from: 'src_assets/manifiest.json',
+          from: 'assets/manifiest.json',
           to: path.resolve(distPath, 'manifest.json'),
         },
       ]),

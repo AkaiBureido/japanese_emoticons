@@ -8,12 +8,14 @@ export function constructTableGroups(
   parent: Node,
   spanList: string[],
   cellPadding: number,
+  numColumns: number,
 ): ComputedSpanItem[][] {
   let [cellParent, cell] = createVariableWidthTextSpan()
   parent.appendChild(cellParent)
-  let columnWidth = cellParent.clientWidth / 4
-  console.log("#Container.cell", cell.clientWidth)
-  console.log("#Container.parent", cellParent.clientWidth)
+  let columnWidth = cellParent.clientWidth / numColumns
+
+  // console.log('#Container.cell', cell.clientWidth)
+  // console.log('#Container.parent', cellParent.clientWidth)
 
   // Breaking up into 4 groups
   let groups: ComputedSpanItem[][] = []
@@ -24,7 +26,7 @@ export function constructTableGroups(
   groups[3] = [] // - emoticons that fit in four cells
   groups[4] = [] // - emoticons that do not fit at all
 
-  let uniq = {};
+  let uniq = {}
 
   for (const span of spanList) {
     if (uniq[span]) {
@@ -32,9 +34,9 @@ export function constructTableGroups(
     }
     uniq[span] = true
 
-    let computed = calculateColspan(span, cell, cellPadding, columnWidth);
+    let computed = calculateColspan(span, cell, cellPadding, columnWidth)
     if (computed.colspan !== -1) {
-      groups[computed.colspan-1].push(computed)
+      groups[computed.colspan - 1].push(computed)
     } else {
       groups[4].push(computed)
     }
@@ -217,43 +219,48 @@ export function tableGroupsToTableRows(groups: ComputedSpanItem[][]): TableRowGr
   return rows
 }
 
-function calculateColspan(span: string, cell: HTMLSpanElement, cellPadding: number, columnWidth: number) {
+function calculateColspan(
+  span: string,
+  cell: HTMLSpanElement,
+  cellPadding: number,
+  columnWidth: number,
+) {
   let computed: ComputedSpanItem
-  let {width} = calculateTextWidth(span, cell, 1)
+  let { width } = calculateTextWidth(span, cell, 1)
 
   if (width < columnWidth - cellPadding) {
-    computed = {smiley: span, em_size: 1, colspan: 1}
+    computed = { smiley: span, em_size: 1, colspan: 1 }
   } else if (width < columnWidth * 2 - cellPadding) {
-    computed = {smiley: span, em_size: 1, colspan: 2}
+    computed = { smiley: span, em_size: 1, colspan: 2 }
   } else if (width < columnWidth * 3 - cellPadding) {
-    computed = {smiley: span, em_size: 1, colspan: 3}
+    computed = { smiley: span, em_size: 1, colspan: 3 }
   } else if (width < columnWidth * 4 - cellPadding) {
-    computed = {smiley: span, em_size: 1, colspan: 4}
+    computed = { smiley: span, em_size: 1, colspan: 4 }
   } else {
     let em_size = 0.9
-    for (; em_size > 0.5; em_size -= 0.05) {
-      let {width} = calculateTextWidth(span, cell, em_size)
+    for (; em_size > 0.5; em_size -= 0.1) {
+      let { width } = calculateTextWidth(span, cell, em_size)
       if (width < columnWidth * 4 - cellPadding) {
         break
       }
     }
-    computed = {smiley: span, em_size: em_size, colspan: -1}
+    computed = { smiley: span, em_size: em_size, colspan: -1 }
   }
-  return computed;
+  return computed
 }
-
 
 function calculateTextWidth(string: string, parent: HTMLElement, em_size: number) {
   let container = document.createElement('span')
 
   container.setAttribute(
-    'style', [
+    'style',
+    [
       'position: absolute',
       'height: auto',
       'width: auto',
       `font-size: ${em_size}em`,
       'white-space: nowrap',
-    ].join(';')
+    ].join(';'),
   )
   parent.appendChild(container)
 
@@ -266,7 +273,7 @@ function calculateTextWidth(string: string, parent: HTMLElement, em_size: number
   }
 
   container.removeChild(text)
-  console.log(`#smiley.${string}`, metrics.width)
+  // console.log(`#smiley.${string}`, metrics.width)
   return metrics
 }
 

@@ -1,12 +1,12 @@
 import * as React from 'react'
 
-import { EventHandler, useCallback, useContext, } from 'react'
+import { useCallback, useContext } from 'react'
+import type {EventHandler} from 'react'
 
-import { EMSettingsContext } from 'self://Components/EMSettings';
+import { useSettingsContext } from 'JEM/store/settings'
 
-
-export const EMSettingsView = () => {
-  let { settings, setSettings } = useContext(EMSettingsContext)
+export const EMSettingsPage = () => {
+  let { settings, setSettings } = useSettingsContext()
 
   let changeCB = useCallback<EventHandler<any>>(
     (e) => {
@@ -29,7 +29,7 @@ export const EMSettingsView = () => {
 
   return (
     <section className={'view-settings-page'}>
-      <label title={"This disables the tooltip hints appearing on mouse hover in the Kaomoji table"}>
+      <label title='This disables the tooltip hints appearing on mouse hover in the Kaomoji table'>
         <input
           type='checkbox'
           name='disableTooltipHints'
@@ -38,7 +38,7 @@ export const EMSettingsView = () => {
         />
         Disable Hover Tooltips
       </label>
-      <label title={"This enables old CSS Styles"}>
+      <label title={'This enables old CSS Styles'}>
         <input
           type='checkbox'
           name='enableOldStyle'

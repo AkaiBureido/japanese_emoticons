@@ -7,7 +7,7 @@ copied to your clipboard.
 
 </section>
 
-- - - - - - - - -
+---
 
 <section>
 
@@ -16,12 +16,12 @@ With kind kudos to [JapaneseEmoticons.net](http://www.japaneseemoticons.me) and
 
 <br/>
 
-Also thanks to [Microsoft Codicons](https://github.com/microsoft/vscode-codicons) for high quality
-interface icons used in this extension.
+Also thanks to [Microsoft Codicons](https://github.com/microsoft/vscode-codicons) for high
+quality interface icons used in this extension.
 
 </section>
 
-- - - - - - - - -
+---
 
 <footer>
 

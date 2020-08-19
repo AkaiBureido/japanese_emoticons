@@ -6,6 +6,7 @@
     "build:ext": "web-ext --source-dir dist build --artifacts-dir build/",
     "run:ext": "web-ext --source-dir dist run",
     "run:dev": "webpack-dev-server --mode development --open",
+    "fmt": "prettier --write src",
     "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
@@ -27,7 +28,7 @@
     "style-loader": "^1.1.4",
     "ts-loader": "^7.0.1",
     "typescript": "^3.8.3",
-    "web-ext": "^4.2.0",
+    "web-ext": "^4.3.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
@@ -38,6 +39,7 @@
     "@types/react-dom": "^16.9.6",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
+    "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-ga": "^2.7.0",

@@ -7,8 +7,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "self://*": ["./src/*"],
-      "asset://*": ["./src_assets/*"]
+      "JEM/*": ["./src/*"],
+      "Assets/*": ["./assets/*"]
     },
     "lib": ["dom", "es5", "es6"]
   },

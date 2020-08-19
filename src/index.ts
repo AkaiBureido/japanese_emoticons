@@ -1,23 +1,23 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import Root from 'self://Layouts/Root'
-import { Metrics } from 'self://Utils/Metrics';
+import App from 'JEM/views/App'
+import { Metrics } from 'JEM/utils/metrics'
 
-async function OnDomReady() {
+async function onDomReady() {
   Metrics.init()
-  let manifest = await (await fetch("manifest.json")).json()
+  let manifest = await (await fetch('manifest.json')).json()
   window._meta = {
     version: manifest.version,
   }
 }
 
-function RemoveSizeHint() {
-  // HACK: Shameless hack:
+function removeSizeHint() {
+  // HACK:
   //  The new layout is relying on flex containers for sizing elements.
   //  However for the extension to properly display in browser it must have a
   //  height set. This is problematic as flex elements will default to the smallest
-  //  possible height by default.
+  //  possible height by default which ends up 0px in this case.
   //
   //  As a quick and dirty solution to this a view-sizer class gives a min-height
   //  to the window allowing the extension to have a reasonable size.
@@ -37,17 +37,15 @@ function RemoveSizeHint() {
 
 window.addEventListener('resize', function _handler(e) {
   // Unmount listener after removal succeeded.
-  if (RemoveSizeHint()) {
+  if (removeSizeHint()) {
     e.target.removeEventListener(e.type, _handler)
   }
 })
-window.addEventListener('DOMContentLoaded', (_e) => {
-  OnDomReady().catch((_err) => {
-    console.error('Failed to init the extension')
+
+window.addEventListener('DOMContentLoaded', () => {
+  onDomReady().catch((err) => {
+    console.error('Failed to init the extension', err)
   })
 })
 
-ReactDOM.render(
-  React.createElement(Root, null, null),
-  document.getElementById('app')
-)
+ReactDOM.render(React.createElement(App), document.getElementById('app'))

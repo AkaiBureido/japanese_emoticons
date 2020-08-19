@@ -1,6 +1,8 @@
 import * as React from 'react'
 
-import { EMWidgetButton } from 'self://Components/EMWidgetButton'
+import {
+  Link,
+} from 'react-router-dom'
 
 interface EMCategory {
   id?: string
@@ -8,15 +10,15 @@ interface EMCategory {
   path: string
 }
 
-export const EMViewCategoryList = (props: { categories: EMCategory[] }) => {
+export const EMViewCategoryList = (props: { prefix: string, categories: EMCategory[] }) => {
   if (!props.categories) return
 
   return (
     <section className='view-category-list'>
-      <ul className="widget-nav-list">
+      <ul className='widget-nav-list'>
         {props.categories.map(({ id, name, path }) => (
           <li key={id}>
-            <EMWidgetButton name={name} path={path} />
+            <Link to={`${props.prefix}/${path}`}>{name}</Link>
           </li>
         ))}
       </ul>
